@@ -1,6 +1,5 @@
 import json
 import pprint
-from flask import Flask
 from flask_cors import CORS, cross_origin
 from random_functions import api
 from dataStructure import dataStructure
@@ -206,9 +205,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route("/data/render", methods = ["GET"])
 @cross_origin()
 def render_data():
-	# data = request.form.get('dataForm')
-	data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1656900689104=key_1&data_type_1656900689104=normal&value_type_1656900689104=username&key_1656900689105=key_2&data_type_1656900689105=normal&value_type_1656900689105=Email&option_1_1656900689105%5B%5D=hostmail&option_1_1656900689105%5B%5D=gmail&key_1656900689106=key_3&data_type_1656900689106=array&value_type_1656900689106=Username&array_option_1656900689106=2&key_1656900714010=key_4&data_type_1656900714010=arrobj&array_option_1656900714010=3&key_object_1656900714010=key_4_1&data_type_object_1656900714010=normal&value_type_object_1656900714010=Number&option_1_object_1656900714010=1&option_2_object_1656900714010=4&key_object_1656900731177=key_4_1&data_type_object_1656900731177=array&value_type_object_1656900731177=MAC%20Address&array_option_object_1656900731177=5&option_1_object_1656900731177%5B%5D=A%3AA&option_1_object_1656900731177%5B%5D=A-A&key_1656900745706=key_5&data_type_1656900745706=object&key_object_1656900745706=key_5_1&data_type_object_1656900745706=normal&value_type_object_1656900745706=Fullname&key_object_1656900780210=key_5_2&data_type_object_1656900780210=array&value_type_object_1656900780210=Random%20List&array_option_object_1656900780210=2&option_1_object_1656900780210=item1%2C%20item2%2C%20item3"
-
+	data = request.form.get('dataForm')
 	result = []
 	number_of_row = re.split("&",data)[0]
 	re.findall("number_of_row=*d&", data)
