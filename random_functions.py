@@ -295,34 +295,34 @@ class api():
 			template.append("4### #### #### ####")
 		if 'visa-electron' in credit_type:
 			template.append(
-				str(self.random_customdata(dataset=[4026, 4405, 4508, 4844, 4913, 4917])) + " #### #### ####")
+				str(self.random_randomlist(dataset=[4026, 4405, 4508, 4844, 4913, 4917])) + " #### #### ####")
 		if 'americanexpress' in credit_type:
-			template.append(str(self.random_customdata(dataset=[34, 37])) + "## ###### #####")
+			template.append(str(self.random_randomlist(dataset=[34, 37])) + "## ###### #####")
 		if 'china-unionpay' in credit_type:
 			template.append("62## ###### #####")
 		if 'mastercard' in credit_type:
 			template.append(str(random.randint(51, 55)) + "## #### #### ####")
 		if 'maestro' in credit_type:
-			template.append(str(self.random_customdata(
+			template.append(str(self.random_randomlist(
 				dataset=[5018, 5020, 5038, 5612, 5893, 6304, 6759, 6761, 6762, 6763, 6390])) + " #### #### ####")
 		if 'diners-club-carte-blanche' in credit_type:
 			template.append(str(random.randint(300, 305)) + "# ###### ####")
 		if 'diners-club-international' in credit_type:
-			template.append(str(self.random_customdata(dataset=[300, 301, 302, 303, 304, 305, 309])) + "# ###### ####")
+			template.append(str(self.random_randomlist(dataset=[300, 301, 302, 303, 304, 305, 309])) + "# ###### ####")
 		if 'diners-club-us-ca' in credit_type:
-			template.append(str(self.random_customdata(dataset=[54, 55])) + "## #### #### ####")
+			template.append(str(self.random_randomlist(dataset=[54, 55])) + "## #### #### ####")
 		if 'jcb' in credit_type:
 			template.append(str(random.randint(3528, 3589)) + " #### #### ####")
 		if 'diners-club-enroute' in credit_type:
-			template.append(str(self.random_customdata(dataset=[2014, 2149])) + " ####### ####")
+			template.append(str(self.random_randomlist(dataset=[2014, 2149])) + " ####### ####")
 		if 'interpayment' in credit_type:
 			template.append("636# #### ####")
 		if 'bankcard' in credit_type:
 			template.append("5610 #### ####")
 		if 'laser' in credit_type:
-			template.append(str(self.random_customdata(dataset=[6304, 6706, 6771, 6709])) + "#### #### ####")
+			template.append(str(self.random_randomlist(dataset=[6304, 6706, 6771, 6709])) + "#### #### ####")
 		if 'switch' in credit_type:
-			template.append(str(self.random_customdata(dataset=[4903, 4905, 4911, 4936, 6333, 6759])) + "#### #### ####")
+			template.append(str(self.random_randomlist(dataset=[4903, 4905, 4911, 4936, 6333, 6759])) + "#### #### ####")
 		if template == []:
 			template = "#### #### #### ####"
 
@@ -442,7 +442,7 @@ class api():
 		if len(m) == 1:
 			m = '0' + m
 		if format == "12 Hour":
-			period = self.random_customdata(["AM", "PM"])
+			period = self.random_randomlist(["AM", "PM"])
 		else:
 			period = ""
 		return h + ":" + m + " " + period
