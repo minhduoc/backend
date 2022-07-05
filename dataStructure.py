@@ -41,11 +41,12 @@ class dataStructure ():
 
 	def format_data(self):
 		self.data = str(self.data).replace("'", '"')
-
-	def print_json(self):
-		self.format_data()
 		your_json =str(self.data)
 		parsed = json.loads(your_json)
+		return parsed
+
+	def print_json(self):
+		parsed = self.format_data()
 		print("---------------------------------------------")
 		print(json.dumps(parsed, indent=4, sort_keys=False))
 		print('\n\n')

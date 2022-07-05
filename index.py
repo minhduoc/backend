@@ -1,29 +1,14 @@
-from flask import Flask, jsonify, request
-import re
-from dataStructure import dataStructure
-from random_functions import api
+import pprint
+from flask import Flask
 from flask_cors import CORS, cross_origin
-
-
+from random_functions import api
+from dataStructure import dataStructure
+import re
+from flask import Flask, jsonify, request
 
 class connect:
 	def __init__(self):
 		pass
-
-# def get_data(query):
-# 	conn = sqlite3.connect("data/random_db.db")
-# 	ldata = conn.execute(query).fetchall()
-# 	conn.close()
-#
-# 	return ldata
-
-# def get_requests(url=""):
-# 	# url = "https://api.github.com"
-# 	if not url:
-# 		return ""
-# 	response = requests.get(url)
-# 	return response.text
-
 
 
 
@@ -34,7 +19,6 @@ def createField(data):
 	tmp_data = {}
 	tmpKey = ""
 	for i in range(len(data)):
-
 
 		if isKeyObject(data[i]):
 			tmp_data.update({"keyName": get_keyname(data[i])})
@@ -55,14 +39,13 @@ def createField(data):
 
 			if option:
 				tmp_data.update({"option": option})
-
 			tmp_data.update({"parent": key_parent})
 
 		elif isKeyname(data[i]):
 			tmp_data.update({"keyName": get_keyname(data[i])})
 			tmp_data.update({"dataType": get_datatype(data[i + 1])})
 			key_parent = "root"
-			tmpKey= tmp_data["keyName"]
+			tmpKey = tmp_data["keyName"]
 			try:
 				tmp_data.update({"valueType": get_valuetype(data[i + 2])})
 			except:
@@ -78,15 +61,10 @@ def createField(data):
 
 			if option:
 				tmp_data.update({"option": option})
-
 			tmp_data.update({"parent": key_parent})
-
-
 
 		if tmp_data:
 			lField.append(tmp_data)
-
-
 			tmp_data = {}
 
 	return lField
@@ -94,7 +72,7 @@ def createField(data):
 
 def generate_json_format(d):
 
-	
+
 	data = re.sub("%5B", "[", d)
 	data = re.sub("%5D", "]", data)
 	data = re.sub("%20", " ", data)
@@ -120,7 +98,7 @@ def generate_json_format(d):
 				for i in range(int(element["option"][0])):
 					obj_dataStructure.updateArrayData(element["keyName"], rand_func())
 
-			elif  element["dataType"] == "object":
+			elif element["dataType"] == "object":
 				obj_dataStructure.createObjectData(element["keyName"])
 				subobj = dataStructure()
 				for tmp in lField:
@@ -162,20 +140,22 @@ def generate_json_format(d):
 	return obj_dataStructure
 
 
-
 def get_random_function(element):
 	random = api()
 	apiName = "random_" + element["valueType"].lower()
 	apiName = re.sub(" ", "", apiName)
-	rand_func= getattr(random, apiName, "")
+	rand_func = getattr(random, apiName, "")
 	return rand_func
+
 
 def get_value_from_response(row):
 	return re.findall("=.*", row)[0][1:]
 
+
 def isKeyname(row):
 	if re.findall("key_\S+=", row):
 		return True
+
 
 def isKeyObject(row):
 	if re.findall("key_object_\S+=", row):
@@ -183,11 +163,13 @@ def isKeyObject(row):
 	else:
 		return False
 
+
 def isOption(row):
 	if re.findall("option_\S+=", row):
 		return True
 	else:
 		return False
+
 
 def get_keyname(row):
 	if re.findall("key_\S+=", row):
@@ -195,11 +177,13 @@ def get_keyname(row):
 	else:
 		return ""
 
+
 def get_datatype(row):
 	if re.findall("data_type_\S+=", row):
 		return re.findall("=.*", row)[0][1:]
 	else:
 		return ""
+
 
 def get_option(row):
 	if re.findall("option_\S+=", row):
@@ -207,25 +191,19 @@ def get_option(row):
 	else:
 		return ""
 
+
 def get_valuetype(row):
 	if re.findall("value_type_\S+=", row):
 		return re.findall("=.*", row)[0][1:]
 	else:
 		return ""
 
+
 def get_array_element_number(row):
 	if re.findall("array_option_\S+=", row):
 		return re.findall("=.*", row)[0][1:]
 	else:
 		return ""
-
-
-
-
-
-
-
-
 
 
 app = Flask(__name__)
@@ -248,30 +226,27 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # def insert_db():
 # 	pass
 
-@app.route("/request", methods = ["GET"])
-def test_request():
-	return get_requests()
 
-@app.route("/export", methods = ["POST"])
-@cross_origin()
-def render_data1(url = "http://127.0.0.1:5000/request"):
-	if not url:
-		return ""
-	data = generate_json_format(url).print_json()
 
-	data = re.sub("\n", "<br>", data)
-	data = re.sub(" ", "&nbsp;", data)
 
-	return data
-
+     
 @app.route("/data/render", methods = ["POST"])
 @cross_origin()
 def render_data():
-    dataForm = request.form.get('dataForm')
-    data = generate_json_format(dataForm).print_json()
-    data = re.sub("\n", "<br>", data)
-    data = re.sub(" ", "&nbsp;", data)
-    return data
+	data = request.form.get('dataForm')
+	result = []
+	number_of_row = re.split("&",data)[0]
+	re.findall("number_of_row=*d&", data)
+
+	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
+		element = generate_json_format(data).format_data()
+
+		result.append(element)
+		pprint.pprint(result)
+
+	return pprint.pformat(result, indent=6 ).replace("\n", "<br>").replace(" ", "&nbsp;")
+
+
 
 
 
