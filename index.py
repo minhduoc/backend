@@ -115,7 +115,6 @@ def generate_json_format(d):
 								subobj.updateArrayData(tmp["keyName"], rand_func())
 					if subobj.data:
 						obj_dataStructure.updateObjectData(element["keyName"], subobj.data)
-						break
 
 			elif element["dataType"] == "arrobj":
 				obj_dataStructure.createArrayData(element["keyName"])
@@ -242,9 +241,8 @@ def render_data():
 		element = generate_json_format(data).format_data()
 
 		result.append(element)
-		pprint.pprint(result)
-
-	return pprint.pformat(result, indent=6 ).replace("\n", "<br>").replace(" ", "&nbsp;")
+		
+	return pprint.pformat(result, indent=6, sort_dicts=False).replace("'", '"')
 
 
 
