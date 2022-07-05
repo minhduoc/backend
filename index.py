@@ -1,39 +1,18 @@
-from flask import Flask, jsonify
+from flask import Flask
 import re
-import requests
 from dataStructure import dataStructure
 from random_functions import api
+import pprint
 
 class connect:
 	def __init__(self):
 		pass
-
-# def get_data(query):
-# 	conn = sqlite3.connect("data/random_db.db")
-# 	ldata = conn.execute(query).fetchall()
-# 	conn.close()
-#
-# 	return ldata
-
-def get_requests(url=""):
-	# url = "https://api.github.com"
-	if not url:
-		return ""
-	response = requests.get(url)
-	return response.text
-
-
-
-
-
-
 
 def createField(data):
 	lField = []
 	tmp_data = {}
 	tmpKey = ""
 	for i in range(len(data)):
-
 
 		if isKeyObject(data[i]):
 			tmp_data.update({"keyName": get_keyname(data[i])})
@@ -54,7 +33,6 @@ def createField(data):
 
 			if option:
 				tmp_data.update({"option": option})
-
 			tmp_data.update({"parent": key_parent})
 
 		elif isKeyname(data[i]):
@@ -77,27 +55,18 @@ def createField(data):
 
 			if option:
 				tmp_data.update({"option": option})
-
 			tmp_data.update({"parent": key_parent})
-
-
 
 		if tmp_data:
 			lField.append(tmp_data)
-
-
 			tmp_data = {}
 
 	return lField
 
 
-def generate_json_format(url):
-	res = get_requests(url=url)
+def generate_json_format(d):
 
-	if not res:
-		return ""
-
-	data = re.sub("%5B", "[", res)
+	data = re.sub("%5B", "[", d)
 	data = re.sub("%5D", "]", data)
 	data = re.sub("%20", " ", data)
 	data = re.sub("%3A", ":", data)
@@ -222,46 +191,23 @@ def get_array_element_number(row):
 		return ""
 
 
-
-
-
-
-
-
-
-
 app = Flask(__name__)
 
-# @app.route("/get", methods = ["GET"])
-# def get_from_db():
-#
-# 	ldata = get_data("SELECT value FROM animalName")
-# 	data = []
-# 	for row in ldata:
-# 		data.append(row)
-#
-# 	return jsonify(data)
-
-
-# @app.route("/add", methods =["POST"])
-# def insert_db():
-# 	pass
-
-@app.route("/request", methods = ["GET"])
-def test_request():
-	return "number_of_row=100&format_file=JSON&sql_table_name=&key_1656900689104=key_1&data_type_1656900689104=normal&value_type_1656900689104=username&key_1656900689105=key_2&data_type_1656900689105=normal&value_type_1656900689105=Email&option_1_1656900689105%5B%5D=hostmail&option_1_1656900689105%5B%5D=gmail&key_1656900689106=key_3&data_type_1656900689106=array&value_type_1656900689106=firstname&array_option_1656900689106=2&key_1656900714010=key_4&data_type_1656900714010=arrobj&array_option_1656900714010=3&key_object_1656900714010=key_4_1&data_type_object_1656900714010=normal&value_type_object_1656900714010=Number&option_1_object_1656900714010=1&option_2_object_1656900714010=4&key_object_1656900731177=key_4_2&data_type_object_1656900731177=array&value_type_object_1656900731177=MAC%20Address&array_option_object_1656900731177=5&option_1_object_1656900731177%5B%5D=A%3AA&option_1_object_1656900731177%5B%5D=A-A&key_1656900745706=key_5&data_type_1656900745706=object&key_object_1656900745706=key_5_1&data_type_object_1656900745706=normal&value_type_object_1656900745706=Fullname&key_object_1656900780210=key_5_2&data_type_object_1656900780210=array&value_type_object_1656900780210=Random%20List&array_option_object_1656900780210=2&option_1_object_1656900780210=item1%2C%20item2%2C%20item3"
-
-
 @app.route("/export", methods = ["GET"])
-def render_data(url = "http://127.0.0.1:5000//request"):
-	if not url:
+def render_data(data=""):
+	if not data:
 		return ""
-	data = generate_json_format(url).print_json()
+	result = []
+	number_of_row = re.split("&",data)[0]
+	re.findall("number_of_row=*d&", data)
 
-	data = re.sub("\n", "<br>", data)
-	data = re.sub(" ", "&nbsp;", data)
+	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
+		element = generate_json_format(data).format_data()
 
-	return data
+		result.append(element)
+		pprint.pprint(result)
+
+	return pprint.pformat(result, indent=6 ).replace("\n", "<br>").replace(" ", "&nbsp;")
 
 if __name__ == "__main__":
 	app.run()
