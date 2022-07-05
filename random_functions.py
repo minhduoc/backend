@@ -27,6 +27,15 @@ class api():
 		file_API.write("\n\tdef random_" + name + "(self):")
 		file_API.write("\n\t\treturn random.choice(db." + name + ")\n")
 
+	def wrap(self, args):
+		min = args[0]
+		max = args[1]
+		if min > max:
+			tmp = min
+			min = max
+			max = tmp
+		return min, max
+
 	###API for random animalName ###
 	def random_animalname(self):
 		return random.choice(db.animalName)
@@ -169,14 +178,12 @@ class api():
 
 	###API for random customdata ###
 	def random_randomlist(self, dataset=[]):
-		"""
-		:param dataset:
-		:return:
-		"""
 		if  not dataset:
 			return []
 		else:
-			return random.choice(dataset)
+			data = re.sub(" ", "", dataset[0])
+			data = re.split(",", data)
+			return random.choice(data)
 
 	###API for random fullName ###
 	def random_fullname(self):
@@ -184,33 +191,39 @@ class api():
 
 	###API for random userName ###
 	def random_username(self):
-		return self.random_firstname()[0].lower() + self.random_lastname() + str(random.randint(1, 10))
+		return self.random_firstname()[0].lower() + self.random_lastname().lower() + str(random.randint(1, 99))
 
 	###API for random Age ###
-	def randomage(self, min=10, max=90):
-		"""
-		:param min:
-		:param max:
-		"""
+	def randomage(self, args=None):
+
+		min = 10
+		max = 90
+		if args:
+			min, max = self.wrap(args)
+
 		return random.randint(min, max)
 
 	###API for random year ###
-	def random_year(self, min=1800, max=2200):
+	def random_year(self, args = None):
+		min = 1800
+		max = 2200
+		if args:
+			min, max = self.wrap(args)
+
 		return random.randint(min, max)
 
 	###API for random email ###
-	def random_email(self, name="", domain=""):
-		"""
-		:param name:
-		:param domain:
-		"""
-		if not name:
-			name = self.random_fullname()
-		name = re.sub(" ", "", name)
-		if not domain:
+	def random_email(self, args = None):
+
+		name = self.random_username()
+		if args:
+			domain = random.choice(args)
+		else:
 			domain = self.random_domain()
 
-		return name + "@" + domain
+		extends = ["com", "net", "org", "edu", "vn", "com.vn", "net.vn", "edu.vn", "ac.uk", "co.uk", "gov.uk", "me.uk", "org.uk"]
+
+		return name.lower() + "@" + domain + "." + self.random_randomlist(extends)
 
 	###API for random ipv4 ###
 	def random_ipv4(self):
@@ -244,11 +257,12 @@ class api():
 		return mac[0:-1]
 
 	###API for random version ###
-	def random_version(self, min=2, max=4):
-		"""
-		:param min:
-		:param max:
-		"""
+	def random_version(self, args = None):
+		min = 2
+		max = 4
+		if args:
+			min, max = self.wrap(args)
+
 		lenth = random.randint(min, max)
 		version = ""
 		for i in range(lenth):
@@ -336,24 +350,12 @@ class api():
 		return credit_number
 
 	###API for random date ###
-	def random_date(self, min="01/01/1800", max="31/12/2200", format="dd/mm/yyyy"):
-		"""
-
-		:param min: minimum date of random range
-		:param max: maximum date of random range
-		:param format:
-			"dd/mm/yyyy"
-			"mm/dd/yyyy"
-			"Mth/dd/yyyy"
-
-			"dd-mm-yyyy"
-			"mm-dd-yyyy"
-			"Mth-dd-yyyy"
-
-			"dd.mm.yyyy"
-			"mm.dd.yyyy"
-			"Mth.dd.yyyy"
-		"""
+	def random_date(self, args):
+		min = "01/01/1800"
+		max = "31/12/2200"
+		format = args[3]
+		if args:
+			min, max = self.wrap(args)
 
 		minDay, minMonth, minYear = re.split('/', min)
 		maxDay, maxMonth, maxYear = re.split('/', max)
@@ -416,18 +418,29 @@ class api():
 		return str(random.randint(1, 999)) + " " + self.random_streetname()
 
 	###API for random password ###
-	def random_password(self, min=8, max=12):
+	def random_password(self, args):
 		"""
 		:param min:
 		:param max:
 
 		"""
+		min = 8
+		max = 12
+		if args:
+			min, max = self.wrap(args)
+
 		template = string.digits + string.ascii_lowercase + string.ascii_uppercase + '!@#$%^&*'
 		len = random.randint(min, max)
 		return ''.join(random.choice(template) for _ in range(len))
 
 	###API for random number ###
-	def random_number(self, min=0, max=9999):
+	def random_number(self, args=None):
+
+		min = 8
+		max = 12
+		if args:
+			min, max = self.wrap(args)
+
 		return random.randint(min, max)
 
 	###API for random time ###
