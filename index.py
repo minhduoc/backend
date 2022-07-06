@@ -5,7 +5,7 @@ from flask_cors import CORS, cross_origin
 from random_functions import api
 from dataStructure import dataStructure
 import re
-from flask import Flask
+from flask import Flask, request
 
 class connect:
 	def __init__(self):
@@ -67,15 +67,38 @@ def createField(data):
 
 	return lField
 
+def decodeHtml(data):
+   data = re.sub("%20", " ", data)
+   data = re.sub("%21", "!", data)
+   data = re.sub("%22", '"', data)
+   data = re.sub("%23", "#", data)
+   data = re.sub("%24", "$", data)
+   data = re.sub("%25", "%", data)
+   data = re.sub("%26", "&", data)
+   data = re.sub("%27", "'", data)
+   data = re.sub("%28", "(", data)
+   data = re.sub("%29", ")", data)
+   data = re.sub("%2A", "*", data)
+   data = re.sub("%2B", "+", data)
+   data = re.sub("%2C", ",", data)
+   data = re.sub("%2D", "-", data)
+   data = re.sub("%2E", ".", data)
+   data = re.sub("%2F", "/", data)
+
+   data = re.sub("%3A", ":", data)
+   data = re.sub("%3B", ";", data)
+   data = re.sub("%3C", "<", data)
+   data = re.sub("%3D", "=", data)
+   data = re.sub("%3E", ">", data)
+   data = re.sub("%3F", "?", data)
+   data = re.sub("%40", "@", data)
+
+   return data
+
+
 def generate_json_format(d):
 
-	data = re.sub("%5B", "[", d)
-	data = re.sub("%5D", "]", data)
-	data = re.sub("%20", " ", data)
-	data = re.sub("%3A", ":", data)
-	data = re.sub("%2C", ",", data)
-	data = re.sub("%2F", "/", data)
-
+	data = decodeHtml(d)
 
 	data = re.split("&", data)
 
@@ -205,60 +228,58 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-# @app.route("/data/render", methods = ["GET"])
-# @cross_origin()
-# def render_data():
-	# data = request.form.get('dataForm')
-	# data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657072275058=num&data_type_1657072275058=normal&value_type_1657072275058=Password&option_1_1657072275058=1&option_2_1657072275058=5"
-	# result = []
-	# number_of_row = re.split("&",data)[0]
-	# re.findall("number_of_row=*d&", data)
-	#
-	# for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
-	# 	element = generate_json_format(data).format_data()
-	#
-	# 	result.append(element)
-	#
-	# pprint.pprint(result)
-	# return pprint.pformat(result, indent=6 ).replace("'", '"')
-
-
-@app.route("/data/render", methods = ["GET"])
+@app.route("/data/render", methods = ["POST"])
 @cross_origin()
 def render_data():
-	# data = request.form.get('dataForm')
-	type = "date"
-	option1 = "2020-01-01"
-	option2 = "2020-01-10"
-	option3 = "sqltime"
-
-	if option1:
-		option1 = "&option_1_1657072275058=" + option1
-	if option2:
-		option2 = "&option_2_1657072275058=" + option2
-	if option3:
-		option3 = "&option_3_1657072275058=" + option3
-
-	data = "number_of_row=1000&format_file=JSON&sql_table_name=&key_1657072275058="+type+"&data_type_1657072275058=normal&value_type_1657072275058="+type+option1+option2+option3
-	# data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657078784735=date&data_type_1657078784735=normal&value_type_1657078784735=Date&option_1_1657078784735=2022-07-06&option_2_1657078784735=2022-07-13&option_3_1657078784735=dd%2Fmm%2Fyyyy"
-
+	data = request.form.get('dataForm')
 	result = []
 	number_of_row = re.split("&",data)[0]
 	re.findall("number_of_row=*d&", data)
 
 	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
 		element = generate_json_format(data).format_data()
+
 		result.append(element)
 
-	result = json.loads(str(result).replace("'", '"'))
-	print(json.dumps(result, indent=4, sort_keys=False))
+	return pprint.pformat(result, indent=6, sort_dicts=False).replace("'", '"')
 
-	return print_html(json.dumps(result, indent=8, sort_keys=False))
 
-def print_html(data):
-	data = data.replace("\n", "<br>").replace(" ", "&nbsp;")
+# @app.route("/data/render", methods = ["GET"])
+# @cross_origin()
+# def render_data():
+# 	# data = request.form.get('dataForm')
+# 	type = "date"
+# 	option1 = "2020-01-01"
+# 	option2 = "2020-01-10"
+# 	option3 = "sqltime"
 
-	return data
+# 	if option1:
+# 		option1 = "&option_1_1657072275058=" + option1
+# 	if option2:
+# 		option2 = "&option_2_1657072275058=" + option2
+# 	if option3:
+# 		option3 = "&option_3_1657072275058=" + option3
+
+# 	data = "number_of_row=1000&format_file=JSON&sql_table_name=&key_1657072275058="+type+"&data_type_1657072275058=normal&value_type_1657072275058="+type+option1+option2+option3
+# 	# data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657078784735=date&data_type_1657078784735=normal&value_type_1657078784735=Date&option_1_1657078784735=2022-07-06&option_2_1657078784735=2022-07-13&option_3_1657078784735=dd%2Fmm%2Fyyyy"
+
+# 	result = []
+# 	number_of_row = re.split("&",data)[0]
+# 	re.findall("number_of_row=*d&", data)
+
+# 	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
+# 		element = generate_json_format(data).format_data()
+# 		result.append(element)
+
+# 	result = json.loads(str(result).replace("'", '"'))
+# 	print(json.dumps(result, indent=4, sort_keys=False))
+
+# 	return print_html(json.dumps(result, indent=8, sort_keys=False))
+
+# def print_html(data):
+# 	data = data.replace("\n", "<br>").replace(" ", "&nbsp;")
+
+# 	return data
 
 
 if __name__ == "__main__":

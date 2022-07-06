@@ -29,7 +29,8 @@ class dataStructure ():
 
 	def createArrayData(self, FieldName) :
 		if self.data is None:
-			self.data = []
+			self.data = {}
+			self.data[FieldName] = []
 		else:
 			self.data[FieldName] = []
 
