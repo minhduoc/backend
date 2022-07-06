@@ -92,6 +92,8 @@ def decodeHtml(data):
    data = re.sub("%3E", ">", data)
    data = re.sub("%3F", "?", data)
    data = re.sub("%40", "@", data)
+   
+#    data = re.sub(" ", "_", data)
 
    return data
 
@@ -234,52 +236,48 @@ def render_data():
 	data = request.form.get('dataForm')
 	result = []
 	number_of_row = re.split("&",data)[0]
-	re.findall("number_of_row=*d&", data)
+	number_of_row = int(re.findall("=\d*", number_of_row)[0][1:])
 
-	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
+	format_file = re.split("&", data)[1]
+	format_file  = re.findall("=\w*", format_file)[0][1:]
+
+	try:
+		table_name = re.split("&", data)[2]
+		table_name = re.findall("=\w*", table_name)[0][1:]
+	except:
+		table_name = ""
+	for i in range(number_of_row):
 		element = generate_json_format(data).format_data()
-
 		result.append(element)
 
-	return pprint.pformat(result, indent=6, sort_dicts=False).replace("'", '"')
+	
+	if format_file == "JSON":
+		return export_json_file(result)
+	elif format_file == "SQL":
+		return export_sql_file(result,table_name)
+	elif format_file == "CSV":
+		return export_json_file(result)
 
 
-# @app.route("/data/render", methods = ["GET"])
-# @cross_origin()
-# def render_data():
-# 	# data = request.form.get('dataForm')
-# 	type = "date"
-# 	option1 = "2020-01-01"
-# 	option2 = "2020-01-10"
-# 	option3 = "sqltime"
 
-# 	if option1:
-# 		option1 = "&option_1_1657072275058=" + option1
-# 	if option2:
-# 		option2 = "&option_2_1657072275058=" + option2
-# 	if option3:
-# 		option3 = "&option_3_1657072275058=" + option3
+def export_json_file(result):
+   return str(result).replace("'", '"')
 
-# 	data = "number_of_row=1000&format_file=JSON&sql_table_name=&key_1657072275058="+type+"&data_type_1657072275058=normal&value_type_1657072275058="+type+option1+option2+option3
-# 	# data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657078784735=date&data_type_1657078784735=normal&value_type_1657078784735=Date&option_1_1657078784735=2022-07-06&option_2_1657078784735=2022-07-13&option_3_1657078784735=dd%2Fmm%2Fyyyy"
+def export_sql_file(result, table_name):
+	sql_file = ""
+	for row in result:
+		lcol = ""
+		lvalue = ""
+		for col in row:
+			lcol +=" "+ str(col) + ","
+			lvalue +=" '" + str(row[col]) + "',"
+		lcol = lcol[:-1]
+		lvalue = lvalue[:-1]
 
-# 	result = []
-# 	number_of_row = re.split("&",data)[0]
-# 	re.findall("number_of_row=*d&", data)
+		sql_template = "INSERT INTO `" + table_name + "`("+lcol+") VALUES ("+lvalue+");"
+		sql_file += sql_template
+	return sql_file
 
-# 	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
-# 		element = generate_json_format(data).format_data()
-# 		result.append(element)
-
-# 	result = json.loads(str(result).replace("'", '"'))
-# 	print(json.dumps(result, indent=4, sort_keys=False))
-
-# 	return print_html(json.dumps(result, indent=8, sort_keys=False))
-
-# def print_html(data):
-# 	data = data.replace("\n", "<br>").replace(" ", "&nbsp;")
-
-# 	return data
 
 
 if __name__ == "__main__":
