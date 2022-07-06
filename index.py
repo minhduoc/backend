@@ -158,8 +158,8 @@ def generate_json_format(d):
 
 def get_random_function(element):
 	random = api()
-	apiName = "random_" + element["valueType"].lower()
-	apiName = re.sub(" ", "", apiName)
+	name = re.sub("_", "", element["valueType"].lower())
+	apiName = "random_" + name
 	rand_func = getattr(random, apiName, random.random_randomlist)
 	return rand_func
 
