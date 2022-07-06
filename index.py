@@ -4,7 +4,7 @@ from flask_cors import CORS, cross_origin
 from random_functions import api
 from dataStructure import dataStructure
 import re
-from flask import Flask
+from flask import Flask, request
 
 class connect:
 	def __init__(self):
@@ -132,7 +132,7 @@ def get_random_function(element):
 	random = api()
 	apiName = "random_" + element["valueType"].lower()
 	apiName = re.sub(" ", "", apiName)
-	rand_func = getattr(random, apiName, "random_randomlist")
+	rand_func = getattr(random, apiName, random.random_randomlist)
 	return rand_func
 
 def get_random_value(element):
@@ -202,7 +202,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route("/data/render", methods = ["GET"])
+@app.route("/data/render", methods = ["POST"])
 @cross_origin()
 def render_data():
 	data = request.form.get('dataForm')
