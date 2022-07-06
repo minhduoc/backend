@@ -28,8 +28,8 @@ class api():
 		file_API.write("\n\t\treturn random.choice(db." + name + ")\n")
 
 	def wrap(self, args):
-		min = args[0]
-		max = args[1]
+		min = int(args[0])
+		max = int(args[1])
 		if min > max:
 			tmp = min
 			min = max
@@ -41,7 +41,7 @@ class api():
 		return random.choice(db.animalName)
 
 	###API for random appBundleID ###
-	def random_appBundleid(self):
+	def random_appbundleid(self):
 		return random.choice(db.appBundleID)
 
 	###API for random appName ###
@@ -181,9 +181,12 @@ class api():
 		if  not dataset:
 			return []
 		else:
-			data = re.sub(" ", "", dataset[0])
-			data = re.split(",", data)
-			return random.choice(data)
+			try:
+				dataset = re.sub(" ", "", dataset[0])
+				dataset = re.split(",", dataset)
+			except:
+				pass
+			return random.choice(dataset)
 
 	###API for random fullName ###
 	def random_fullname(self):
@@ -194,7 +197,7 @@ class api():
 		return self.random_firstname()[0].lower() + self.random_lastname().lower() + str(random.randint(1, 99))
 
 	###API for random Age ###
-	def randomage(self, args=None):
+	def random_age(self, args=None):
 
 		min = 10
 		max = 90
@@ -220,6 +223,7 @@ class api():
 			domain = random.choice(args)
 		else:
 			domain = self.random_domain()
+			return name.lower() + "@" + domain
 
 		extends = ["com", "net", "org", "edu", "vn", "com.vn", "net.vn", "edu.vn", "ac.uk", "co.uk", "gov.uk", "me.uk", "org.uk"]
 
@@ -244,10 +248,14 @@ class api():
 		return ipv6[0:-1]
 
 	###API for random macAddress ###
-	def random_macaddress(self, seperator=":"):
+	def random_macaddress(self, args=None):
 		"""
 		:param seperator: ":"  "-"
 		"""
+		if args:
+			seperator = args[0]
+		else:
+			seperator = ":"
 
 		template = string.digits + "ABCDEF"
 		mac = ""
@@ -350,19 +358,30 @@ class api():
 		return credit_number
 
 	###API for random date ###
-	def random_date(self, args):
+	def random_date(self, args= None):
 		min = "01/01/1800"
 		max = "31/12/2200"
-		format = args[3]
+		try:
+			format = args[2]
+		except:
+			format = "dd/mm/yyyy"
 		if args:
-			min, max = self.wrap(args)
-
-		minDay, minMonth, minYear = re.split('/', min)
-		maxDay, maxMonth, maxYear = re.split('/', max)
+			minDay, minMonth, minYear = re.split('/', args[0])
+			maxDay, maxMonth, maxYear = re.split('/', args[1])
+		else:
+			minDay, minMonth, minYear = re.split('/', min)
+			maxDay, maxMonth, maxYear = re.split('/', max)
 		tmpY = str(random.randint(int(minYear), int(maxYear)))
 
-		tmpM = random.randint(1, 12)
-		dd = random.randint(1, calendar.mdays[tmpM])
+		if minYear == maxYear:
+			tmpM = int(random.randint(int(minMonth), int(maxMonth)))
+		else:
+			tmpM = random.randint(1, 12)
+
+		while True:
+			dd = random.randint(1, calendar.mdays[tmpM])
+			if dd > int(minDay) and dd < int(maxDay):
+				break
 		if len(str(dd)) == 1:
 			dd = '0' + str(dd)
 
@@ -418,7 +437,7 @@ class api():
 		return str(random.randint(1, 999)) + " " + self.random_streetname()
 
 	###API for random password ###
-	def random_password(self, args):
+	def random_password(self, args= None):
 		"""
 		:param min:
 		:param max:
@@ -444,13 +463,18 @@ class api():
 		return random.randint(min, max)
 
 	###API for random time ###
-	def random_time(self, format="12 Hour"):
+	def random_time(self, args = None):
 		"""
 		:param format:
 			"12 Hour"
 			"24 Hour"
 		"""
-		h = str(random.randint(1, int(format[:2])))
+		if args:
+			format = args[0]
+		else:
+			format = "12 Hour"
+
+		h = str(random.randint(1, int(format[:2]) - 1))
 		m = str(random.randint(0, 59))
 		if len(m) == 1:
 			m = '0' + m
