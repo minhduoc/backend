@@ -359,18 +359,23 @@ class api():
 
 	###API for random date ###
 	def random_date(self, args= None):
-		min = "01/01/1800"
-		max = "31/12/2200"
+		min = "1800-01-01"
+		max = "2200-12-31"
+
+		sqltime = ""
 		try:
-			format = args[2]
+			format = args[-1]
+			if format == "sqltime":
+				sqltime = self.random_sqltime()
+
 		except:
 			format = "dd/mm/yyyy"
 		if args:
-			minDay, minMonth, minYear = re.split('/', args[0])
-			maxDay, maxMonth, maxYear = re.split('/', args[1])
+			minYear, minMonth,minDay = re.split('-', args[0])
+			maxYear, maxMonth, maxDay = re.split('-', args[1])
 		else:
-			minDay, minMonth, minYear = re.split('/', min)
-			maxDay, maxMonth, maxYear = re.split('/', max)
+			minYear, minMonth,minDay = re.split('-', min)
+			maxYear, maxMonth, maxDay = re.split('-', max)
 		tmpY = str(random.randint(int(minYear), int(maxYear)))
 
 		if minYear == maxYear:
@@ -398,7 +403,23 @@ class api():
 		date = re.sub("dd", str(dd), date)
 
 		date = re.sub("yyyy", tmpY, date)
-		return date
+		return date + sqltime
+
+	def random_sqltime(self):
+		h = str(random.randint(0,23))
+		if len(h) == 1:
+			h = '0' + h
+
+		m = str(random.randint(0,59))
+		if len(m) == 1:
+			m = '0' + m
+
+		s = str(random.randint(0, 59))
+		if len(s) == 1:
+			s = '0' + s
+
+		time = " " + h + ":" + m + ":" + s
+		return time
 
 	###API for random fileNameWithExtension ###
 	def random_filenamewithextension(self):

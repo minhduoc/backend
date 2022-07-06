@@ -10,14 +10,14 @@ class generateTestcase():
 	def create_file_test(self):
 		print("Initial file to testing")
 		test_file = open("testAPI.py", mode="w")
-		test_file.write("\nfrom api import api")
+		test_file.write("\nfrom random_functions import api")
 		test_file.write("\nfrom dataStructure import dataStructure")
 		test_file.write("\nclass testAPI():")
 		test_file.write("\n\tdef __init__(self):")
 		test_file.write("\n\t\tglobal random_tool")
 		test_file.write("\n\t\trandom_tool = api()\n")
 
-	def create_testcase(self, api_name, loop=10):
+	def create_testcase(self, api_name, loop=100):
 
 		test_api = open("testAPI.py", mode="a")
 		test_api.write("\n\t### TEST: "+api_name+" ###")
@@ -25,7 +25,7 @@ class generateTestcase():
 		test_api.write("\n\t\ttest_" + api_name + " = dataStructure()")
 		test_api.write("\n\t\tkey = '" + api_name + "'")
 		test_api.write('\n\t\ttest_'+api_name+'.createCommonData("TEST")')
-		test_api.write('\n\t\ttest_'+api_name+'.updateCommonData("TEST", random_tool.random_customdata([key]))')
+		test_api.write('\n\t\ttest_'+api_name+'.updateCommonData("TEST", random_tool.random_randomlist([key]))')
 		test_api.write("\n\t\ttest_" + api_name + ".createArrayData(key)")
 		test_api.write("\n\t\tfor i in range("+str(loop)+"):")
 		test_api.write("\n\t\t\ttest_"+api_name+".updateArrayData(key, random_tool."+api_name+"())")
