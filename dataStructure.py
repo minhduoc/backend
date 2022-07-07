@@ -5,8 +5,16 @@ class dataStructure ():
 
 	def __init__(self):
 		self.data = None
-		self.parent = None
-		self.value_type = None
+		self.id = self.autoID()
+
+	def autoID(self):
+		global id
+		id = 0
+		if hasattr(self, "id"):
+			self.id += 1
+		else:
+			self.id = 0
+
 
 	def createCommonData(self, FieldName):
 		if self.data is None:
@@ -29,7 +37,8 @@ class dataStructure ():
 
 	def createArrayData(self, FieldName) :
 		if self.data is None:
-			self.data = []
+			self.data = {}
+			self.data[FieldName] = []
 		else:
 			self.data[FieldName] = []
 

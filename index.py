@@ -51,7 +51,7 @@ def createField(data):
 
 			option = []
 			try:
-				for j in range(i + 1, i + 6):
+				for j in range(i + 1, i + 7):
 					if isOption(data[j]):
 						option.append(get_option(data[j]))
 			except:
@@ -67,15 +67,39 @@ def createField(data):
 
 	return lField
 
-def generate_json_format(d):
-
-	data = re.sub("%5B", "[", d)
-	data = re.sub("%5D", "]", data)
+def decodeHtml(data):
 	data = re.sub("%20", " ", data)
-	data = re.sub("%3A", ":", data)
+	data = re.sub("%21", "!", data)
+	data = re.sub("%22", '"', data)
+	data = re.sub("%23", "#", data)
+	data = re.sub("%24", "$", data)
+	data = re.sub("%25", "%", data)
+	data = re.sub("%26", "&", data)
+	data = re.sub("%27", "'", data)
+	data = re.sub("%28", "(", data)
+	data = re.sub("%29", ")", data)
+	data = re.sub("%2A", "*", data)
+	data = re.sub("%2B", "+", data)
 	data = re.sub("%2C", ",", data)
+	data = re.sub("%2D", "-", data)
+	data = re.sub("%2E", ".", data)
 	data = re.sub("%2F", "/", data)
 
+	data = re.sub("%3A", ":", data)
+	data = re.sub("%3B", ";", data)
+	data = re.sub("%3C", "<", data)
+	data = re.sub("%3D", "=", data)
+	data = re.sub("%3E", ">", data)
+	data = re.sub("%3F", "?", data)
+	data = re.sub("%40", "@", data)
+
+	data = re.sub(" ", "_", data)
+
+	return data
+
+def generate_json_format(d):
+
+	data = decodeHtml(d)
 
 	data = re.split("&", data)
 
@@ -133,8 +157,8 @@ def generate_json_format(d):
 
 def get_random_function(element):
 	random = api()
-	apiName = "random_" + element["valueType"].lower()
-	apiName = re.sub(" ", "", apiName)
+	name = re.sub("_", "", element["valueType"].lower())
+	apiName = "random_" + name
 	rand_func = getattr(random, apiName, random.random_randomlist)
 	return rand_func
 
@@ -239,26 +263,54 @@ def render_data():
 	if option3:
 		option3 = "&option_3_1657072275058=" + option3
 
-	data = "number_of_row=1000&format_file=JSON&sql_table_name=&key_1657072275058="+type+"&data_type_1657072275058=normal&value_type_1657072275058="+type+option1+option2+option3
-	# data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657078784735=date&data_type_1657078784735=normal&value_type_1657078784735=Date&option_1_1657078784735=2022-07-06&option_2_1657078784735=2022-07-13&option_3_1657078784735=dd%2Fmm%2Fyyyy"
-
+	# data = "number_of_row=1000&format_file=JSON&sql_table_name=&key_1657072275058="+type+"&data_type_1657072275058=normal&value_type_1657072275058="+type+option1+option2+option3
+	data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657101893618=key%201&data_type_1657101893618=normal&value_type_1657101893618=Credit%20Card&option_1_1657101893618%5B%5D=visa&option_1_1657101893618%5B%5D=mastercard&key_1657101932584=key_2%20&data_type_1657101932584=normal&value_type_1657101932584=MAC%20Address&option_1_1657101932584%5B%5D=A%3AA&option_1_1657101932584%5B%5D=A-A"
 	result = []
 	number_of_row = re.split("&",data)[0]
-	re.findall("number_of_row=*d&", data)
+	number_of_row = int(re.findall("=\d*", number_of_row)[0][1:])
 
-	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
+	format_file = re.split("&", data)[1]
+	format_file  = re.findall("=\w*", format_file)[0][1:]
+
+	try:
+		table_name = re.split("&", data)[2]
+		table_name = re.findall("=\w*", table_name)[0][1:]
+	except:
+		table_name = ""
+
+	for i in range(number_of_row):
 		element = generate_json_format(data).format_data()
 		result.append(element)
 
-	result = json.loads(str(result).replace("'", '"'))
-	print(json.dumps(result, indent=4, sort_keys=False))
+	if format_file == "JSON":
+		return export_json_file(result)
+	elif format_file == "SQL":
+		return export_sql_file(result,table_name)
+	elif format_file == "CSV":
+		return None
 
-	return print_html(json.dumps(result, indent=8, sort_keys=False))
+def export_json_file(result):
+	return str(json.loads(str(result).replace("'", '"')))
 
-def print_html(data):
-	data = data.replace("\n", "<br>").replace(" ", "&nbsp;")
+def export_sql_file(result, table_name):
+	sql_file = ""
+	for row in result:
+		lcol = ""
+		lvalue = ""
+		for col in row:
+			lcol +=" "+ str(col) + ","
+			lvalue +=" '" + str(row[col]) + "',"
+		lcol = lcol[:-1]
+		lvalue = lvalue[:-1]
 
-	return data
+		sql_template = "INSERT INTO `" + table_name + "`("+lcol+") VALUES ("+lvalue+");"
+		sql_file += sql_template
+	print(re.sub(";", ";\n", sql_file))
+	return sql_file
+
+def export_csv_file():
+	pass
+
 
 
 if __name__ == "__main__":

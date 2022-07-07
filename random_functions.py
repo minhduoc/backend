@@ -253,7 +253,7 @@ class api():
 		:param seperator: ":"  "-"
 		"""
 		if args:
-			seperator = args[0]
+			seperator = random.choice(args)
 		else:
 			seperator = ":"
 
@@ -359,23 +359,29 @@ class api():
 
 	###API for random date ###
 	def random_date(self, args= None):
-		min = "1800-01-01"
-		max = "2200-12-31"
-
+		min = "2000-01-01"
+		max = "2030-12-31"
 		sqltime = ""
-		try:
+
+		if args:
+			try:
+				minYear, minMonth, minDay = re.split('-', args[0])
+				maxYear, maxMonth, maxDay = re.split('-', args[1])
+			except:
+				minYear, minMonth, minDay = re.split('-', min)
+				maxYear, maxMonth, maxDay = re.split('-', max)
+
 			format = args[-1]
 			if format == "sqltime":
+				format = "dd/mm/yyyy"
 				sqltime = self.random_sqltime()
+			elif re.findall("\d", format):
+				format = "dd/mm/yyyy"
 
-		except:
-			format = "dd/mm/yyyy"
-		if args:
-			minYear, minMonth,minDay = re.split('-', args[0])
-			maxYear, maxMonth, maxDay = re.split('-', args[1])
 		else:
 			minYear, minMonth,minDay = re.split('-', min)
 			maxYear, maxMonth, maxDay = re.split('-', max)
+			format = "dd/mm/yyyy"
 		tmpY = str(random.randint(int(minYear), int(maxYear)))
 
 		if minYear == maxYear:
