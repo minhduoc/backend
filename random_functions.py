@@ -76,21 +76,21 @@ class api():
 	def random_companyname(self):
 		return random.choice(db.companyName)
 
-	###API for random contrucionHeavyEquipment ###
-	def random_contrucionheavyequipment(self):
-		return random.choice(db.contrucionHeavyEquipment)
+	###API for random constructionHeavyEquipment ###
+	def random_constructionheavyequipment(self):
+		return random.choice(db.constructionHeavyEquipment)
 
-	###API for random contrucionMaterial ###
-	def random_contrucionmaterial(self):
-		return random.choice(db.contrucionMaterial)
+	###API for random constructionMaterial ###
+	def random_constructionmaterial(self):
+		return random.choice(db.constructionMaterial)
 
-	###API for random contrucionRole ###
-	def random_contrucionrole(self):
-		return random.choice(db.contrucionRole)
+	###API for random constructionRole ###
+	def random_constructionrole(self):
+		return random.choice(db.constructionRole)
 
-	###API for random contrucionTrade ###
-	def random_contruciontrade(self):
-		return random.choice(db.contrucionTrade)
+	###API for random constructionTrade ###
+	def random_constructiontrade(self):
+		return random.choice(db.constructionTrade)
 
 	###API for random country ###
 	def random_country(self):
@@ -137,7 +137,7 @@ class api():
 		return random.choice(db.firstName)
 
 	###API for random jobTitle ###
-	def random_jobnitle(self):
+	def random_jobtitle(self):
 		return random.choice(db.jobTitle)
 
 	###API for random language ###
@@ -199,8 +199,8 @@ class api():
 	###API for random Age ###
 	def random_age(self, args=None):
 
-		min = 10
-		max = 90
+		min = 1
+		max = 100
 		if args:
 			min, max = self.wrap(args)
 
@@ -253,7 +253,7 @@ class api():
 		:param seperator: ":"  "-"
 		"""
 		if args:
-			seperator = args[0]
+			seperator = random.choice(args)
 		else:
 			seperator = ":"
 
@@ -359,23 +359,27 @@ class api():
 
 	###API for random date ###
 	def random_date(self, args= None):
-		min = "1800-01-01"
-		max = "2200-12-31"
-
+		min = "2000-01-01"
+		max = "2030-12-31"
 		sqltime = ""
-		try:
+		if args:
+			try:
+				minYear, minMonth, minDay = re.split('-', args[0])
+				maxYear, maxMonth, maxDay = re.split('-', args[1])
+			except:
+				minYear, minMonth, minDay = re.split('-', min)
+				maxYear, maxMonth, maxDay = re.split('-', max)
+
 			format = args[-1]
 			if format == "sqltime":
+				format = "dd/mm/yyyy"
 				sqltime = self.random_sqltime()
-
-		except:
-			format = "dd/mm/yyyy"
-		if args:
-			minYear, minMonth,minDay = re.split('-', args[0])
-			maxYear, maxMonth, maxDay = re.split('-', args[1])
+			elif re.findall("\d", format):
+				format = "dd/mm/yyyy"
 		else:
 			minYear, minMonth,minDay = re.split('-', min)
 			maxYear, maxMonth, maxDay = re.split('-', max)
+			format = "dd/mm/yyyy"
 		tmpY = str(random.randint(int(minYear), int(maxYear)))
 
 		if minYear == maxYear:
@@ -436,15 +440,20 @@ class api():
 		return ''.join(random.choice(template) for _ in range(64))
 
 	###API for random phoneNumber ###
-	def random_phonenumber(self, format="0## ### ####"):
+	def random_phonenumber(self, args = None):
 		"""
 		:param format:
 			"0## ### ####"
 			"0##-###-####"
 			"(0##)###-####"
 			"+84 ### ### ###"
-			"0#########"
+			"		
 		"""
+		if args:
+			format = random.choice(args)
+		else:
+			format = "0## ### ####"
+  
 		phone = ''
 		for n in format:
 			if n == "#":
@@ -504,3 +513,12 @@ class api():
 		else:
 			period = ""
 		return h + ":" + m + " " + period
+
+
+	###API for random id ###
+	def random_id(self):
+		return self.random_number(args=[0,99999999])
+
+	###API for random number row ###
+	def random_numberrow(self):
+		return self.random_randomlist(["{numberrow}"])

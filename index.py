@@ -19,7 +19,7 @@ def createField(data):
 	for i in range(len(data)):
 
 		if isKeyObject(data[i]):
-			tmp_data.update({"keyName": get_keyname(data[i])})
+			tmp_data.update({"keyName": get_keyname(data[i]).replace(" ", "_")})
 			tmp_data.update({"dataType": get_datatype(data[i + 1])})
 			key_parent = tmpKey
 			try:
@@ -40,7 +40,7 @@ def createField(data):
 			tmp_data.update({"parent": key_parent})
 
 		elif isKeyname(data[i]):
-			tmp_data.update({"keyName": get_keyname(data[i])})
+			tmp_data.update({"keyName": get_keyname(data[i]).replace(" ", "_")})
 			tmp_data.update({"dataType": get_datatype(data[i + 1])})
 			key_parent = "root"
 			tmpKey = tmp_data["keyName"]
@@ -93,7 +93,6 @@ def decodeHtml(data):
    data = re.sub("%3F", "?", data)
    data = re.sub("%40", "@", data)
    
-#    data = re.sub(" ", "_", data)
 
    return data
 
@@ -158,7 +157,7 @@ def generate_json_format(d):
 
 def get_random_function(element):
 	random = api()
-	name = re.sub("_", "", element["valueType"].lower())
+	name = re.sub(" ", "", element["valueType"].lower())
 	apiName = "random_" + name
 	rand_func = getattr(random, apiName, random.random_randomlist)
 	return rand_func

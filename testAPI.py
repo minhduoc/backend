@@ -116,49 +116,49 @@ class testAPI():
 			test_random_companyname.updateArrayData(key, random_tool.random_companyname())
 		test_random_companyname.print_json()
 
-	### TEST: random_contrucionheavyequipment ###
-	def TEST_random_contrucionheavyequipment(self):
-		test_random_contrucionheavyequipment = dataStructure()
-		key = 'random_contrucionheavyequipment'
-		test_random_contrucionheavyequipment.createCommonData("TEST")
-		test_random_contrucionheavyequipment.updateCommonData("TEST", random_tool.random_randomlist([key]))
-		test_random_contrucionheavyequipment.createArrayData(key)
+	### TEST: random_constructionheavyequipment ###
+	def TEST_random_constructionheavyequipment(self):
+		test_random_constructionheavyequipment = dataStructure()
+		key = 'random_constructionheavyequipment'
+		test_random_constructionheavyequipment.createCommonData("TEST")
+		test_random_constructionheavyequipment.updateCommonData("TEST", random_tool.random_randomlist([key]))
+		test_random_constructionheavyequipment.createArrayData(key)
 		for i in range(100):
-			test_random_contrucionheavyequipment.updateArrayData(key, random_tool.random_contrucionheavyequipment())
-		test_random_contrucionheavyequipment.print_json()
+			test_random_constructionheavyequipment.updateArrayData(key, random_tool.random_constructionheavyequipment())
+		test_random_constructionheavyequipment.print_json()
 
-	### TEST: random_contrucionmaterial ###
-	def TEST_random_contrucionmaterial(self):
-		test_random_contrucionmaterial = dataStructure()
-		key = 'random_contrucionmaterial'
-		test_random_contrucionmaterial.createCommonData("TEST")
-		test_random_contrucionmaterial.updateCommonData("TEST", random_tool.random_randomlist([key]))
-		test_random_contrucionmaterial.createArrayData(key)
+	### TEST: random_constructionmaterial ###
+	def TEST_random_constructionmaterial(self):
+		test_random_constructionmaterial = dataStructure()
+		key = 'random_constructionmaterial'
+		test_random_constructionmaterial.createCommonData("TEST")
+		test_random_constructionmaterial.updateCommonData("TEST", random_tool.random_randomlist([key]))
+		test_random_constructionmaterial.createArrayData(key)
 		for i in range(100):
-			test_random_contrucionmaterial.updateArrayData(key, random_tool.random_contrucionmaterial())
-		test_random_contrucionmaterial.print_json()
+			test_random_constructionmaterial.updateArrayData(key, random_tool.random_constructionmaterial())
+		test_random_constructionmaterial.print_json()
 
-	### TEST: random_contrucionrole ###
-	def TEST_random_contrucionrole(self):
-		test_random_contrucionrole = dataStructure()
-		key = 'random_contrucionrole'
-		test_random_contrucionrole.createCommonData("TEST")
-		test_random_contrucionrole.updateCommonData("TEST", random_tool.random_randomlist([key]))
-		test_random_contrucionrole.createArrayData(key)
+	### TEST: random_constructionrole ###
+	def TEST_random_constructionrole(self):
+		test_random_constructionrole = dataStructure()
+		key = 'random_constructionrole'
+		test_random_constructionrole.createCommonData("TEST")
+		test_random_constructionrole.updateCommonData("TEST", random_tool.random_randomlist([key]))
+		test_random_constructionrole.createArrayData(key)
 		for i in range(100):
-			test_random_contrucionrole.updateArrayData(key, random_tool.random_contrucionrole())
-		test_random_contrucionrole.print_json()
+			test_random_constructionrole.updateArrayData(key, random_tool.random_constructionrole())
+		test_random_constructionrole.print_json()
 
-	### TEST: random_contruciontrade ###
-	def TEST_random_contruciontrade(self):
-		test_random_contruciontrade = dataStructure()
-		key = 'random_contruciontrade'
-		test_random_contruciontrade.createCommonData("TEST")
-		test_random_contruciontrade.updateCommonData("TEST", random_tool.random_randomlist([key]))
-		test_random_contruciontrade.createArrayData(key)
+	### TEST: random_constructiontrade ###
+	def TEST_random_constructiontrade(self):
+		test_random_constructiontrade = dataStructure()
+		key = 'random_constructiontrade'
+		test_random_constructiontrade.createCommonData("TEST")
+		test_random_constructiontrade.updateCommonData("TEST", random_tool.random_randomlist([key]))
+		test_random_constructiontrade.createArrayData(key)
 		for i in range(100):
-			test_random_contruciontrade.updateArrayData(key, random_tool.random_contruciontrade())
-		test_random_contruciontrade.print_json()
+			test_random_constructiontrade.updateArrayData(key, random_tool.random_constructiontrade())
+		test_random_constructiontrade.print_json()
 
 	### TEST: random_country ###
 	def TEST_random_country(self):
@@ -623,10 +623,10 @@ test_object.TEST_random_carmodel()
 test_object.TEST_random_city()
 test_object.TEST_random_color()
 test_object.TEST_random_companyname()
-test_object.TEST_random_contrucionheavyequipment()
-test_object.TEST_random_contrucionmaterial()
-test_object.TEST_random_contrucionrole()
-test_object.TEST_random_contruciontrade()
+test_object.TEST_random_constructionheavyequipment()
+test_object.TEST_random_constructionmaterial()
+test_object.TEST_random_constructionrole()
+test_object.TEST_random_constructiontrade()
 test_object.TEST_random_country()
 test_object.TEST_random_countrycode()
 test_object.TEST_random_creditcardtype()

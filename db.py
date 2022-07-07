@@ -218,17 +218,17 @@ class database():
 							'Devcast', 'Meedoo', 'DabZ', 'Livepath', 'Brainbox', 'Youspan', 'Feedfire', 'Twinte',
 							'Shufflester', 'Trunyx', 'Voomm']
 
-		self.contrucionHeavyEquipment = ['Dump Truck', 'Compactor', 'Grader', 'Crawler', 'Excavator', 'Scraper',
+		self.constructionHeavyEquipment = ['Dump Truck', 'Compactor', 'Grader', 'Crawler', 'Excavator', 'Scraper',
 										 'Dragline', 'Trencher', 'Skid-Steer', 'Bulldozer', 'Backhoe']
 
-		self.contrucionMaterial = ['Rubber', 'Plastic', 'Vinyl', 'Granite', 'Wood', 'Plexiglass', 'Aluminum', 'Stone',
+		self.constructionMaterial = ['Rubber', 'Plastic', 'Vinyl', 'Granite', 'Wood', 'Plexiglass', 'Aluminum', 'Stone',
 								   'Steel', 'Brass', 'Glass']
 
-		self.contrucionRole = ['Subcontractor', 'Engineer', 'Estimator', 'Construction Worker', 'Supervisor',
+		self.constructionRole = ['Subcontractor', 'Engineer', 'Estimator', 'Construction Worker', 'Supervisor',
 							   'Surveyor', 'Construction Manager', 'Project Manager', 'Architect',
 							   'Construction Expeditor', 'Construction Foreman', 'Electrician']
 
-		self.contrucionTrade = ['Laborer', 'Pipefitter', 'Safety Officer', 'Waterproofer', 'Linemen', 'Glazier',
+		self.constructionTrade = ['Laborer', 'Pipefitter', 'Safety Officer', 'Waterproofer', 'Linemen', 'Glazier',
 								'Millwright', 'Welder', 'Sheet Metal Worker', 'Refridgeration', 'Ironworker',
 								'Brickmason', 'Equipment Operator', 'Carpenter', 'Pipelayer', 'Terrazzo',
 								'Cement Mason', 'Concrete Finisher', 'Plasterers', 'Tile Setter', 'Plumber', 'Painter',
@@ -419,7 +419,7 @@ class database():
 						 'Payment Adjustment Coordinator', 'Accounting Assistant I', 'Assistant Professor',
 						 'VP Marketing', 'Web Designer IV', 'Human Resources Assistant IV']
 
-		self.language = ['Danish', 'Yiddish', 'Dhivehi', 'Mongolian', 'Māori', 'Kashmiri', 'Kazakh', 'English',
+		self.language = ['Danish', 'Yiddish', 'Dhivehi', 'Mongolian', 'Maori', 'Kashmiri', 'Kazakh', 'English',
 						 'Irish Gaelic', 'Persian', 'Swahili', 'Malayalam', 'Papiamento', 'Portuguese', 'Croatian',
 						 'Marathi', 'Romanian', 'Korean', 'Hindi', 'Lao', 'Maltese', 'German', 'Chinese', 'Macedonian',
 						 'Japanese', 'Aymara', 'Tetum', 'Estonian', 'Tswana', 'Spanish', 'Nepali',
