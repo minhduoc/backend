@@ -194,7 +194,7 @@ class api():
 
 	###API for random userName ###
 	def random_username(self):
-		return self.random_firstname()[0].lower() + self.random_lastname().lower() + str(random.randint(1, 99))
+		return (self.random_firstname()[0].lower() + self.random_lastname().lower() + str(random.randint(1, 99))).replace(" ","")
 
 	###API for random Age ###
 	def random_age(self, args=None):
@@ -389,7 +389,7 @@ class api():
 
 		while True:
 			dd = random.randint(1, calendar.mdays[tmpM])
-			if dd > int(minDay) and dd < int(maxDay):
+			if dd >= int(minDay) and dd <= int(maxDay):
 				break
 		if len(str(dd)) == 1:
 			dd = '0' + str(dd)
@@ -480,8 +480,14 @@ class api():
 
 		template = string.digits + string.ascii_lowercase + string.ascii_uppercase + '!@#$%^&*'
 		len = random.randint(min, max)
-		return ''.join(random.choice(template) for _ in range(len))
-
+		result = random.choice('!@#$%^&*')
+		result += random.choice(string.digits)
+		result += random.choice(string.ascii_lowercase)
+		result += random.choice(string.ascii_uppercase)
+		for i in range(4,len):
+			result += random.choice(template)
+  
+		return result
 	###API for random number ###
 	def random_number(self, args=None):
 
