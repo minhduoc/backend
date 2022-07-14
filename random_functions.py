@@ -9,23 +9,66 @@ class api():
 	db = database()
 
 	def formatData(self, rawdata):
+		if type(rawdata) == list:
+			return rawdata
+		
 		item_list = re.split("\n", rawdata)
 		data = []
 		for item in item_list:
 			if item != "":
-				if item not in data:
+				if "'" not in item and item not in data:
 					data.append(item)
 		return data
 
 	def updateDatabase(self, name, data):
 		data_list = self.formatData(data)
-		file_database = open("db.py", mode="a")
-		file_API = open("random_functions.py", mode="a")
 
+		file_db_in = open("db.py",encoding="utf8",  mode="rt")
+		db_contend = file_db_in.read().split("\n")
+
+		for line in db_contend:
+			try:
+				name_in_db = re.findall("self\.\w* =", line)[0]
+				if name.lower() in name_in_db.lower():
+					print("ERROR: This name is already have in database.")
+					return 0
+			except:
+				pass
+
+		file_database = open("db.py", mode="a")
 		file_database.write("\n\t\tself." + name + " = " + str(data_list) + "\n")
+
+		file_API = open("random_functions.py", mode="a")
 		file_API.write("\n\t\t###API for random " + name + " ###")
 		file_API.write("\n\tdef random_" + name + "(self):")
 		file_API.write("\n\t\treturn random.choice(db." + name + ")\n")
+
+		file_fe_in = open("tmp_insert.txt", mode="rt")
+		contend = file_fe_in.read().split("\n")
+		for line in contend:
+			if "<h4>Customize</h4>" in line:
+				newrow = contend[contend.index(line)].replace("<h4>Customize</h4>", "<h4>"+name+"</h4>")
+				contend[contend.index(line)] = newrow
+
+				contend.insert(contend.index(newrow) + 5, "")
+				contend.insert(contend.index(newrow) + 6, """                <div class="type-option" onclick="getAndAppendValueType(this,'${idString}')" >""")
+				contend.insert(contend.index(newrow) + 7, "")
+				contend.insert(contend.index(newrow) + 8, "                    <h4>Customize</h4>")
+				contend.insert(contend.index(newrow) + 9, "")
+				contend.insert(contend.index(newrow) + 10, "                    <p>Customize data from user</p>")
+				contend.insert(contend.index(newrow) + 11, "")
+				contend.insert(contend.index(newrow) + 12, "                </div>")
+				break
+
+		file_fe_in.close()
+
+		modify_fe = open("tmp_insert.txt", mode="wt")
+
+		for line in contend:
+			modify_fe.write(line)
+			modify_fe.write("\n")
+		modify_fe.close()
+
 
 	def wrap(self, args):
 		min = int(args[0])
@@ -181,11 +224,6 @@ class api():
 		if  not dataset:
 			return []
 		else:
-			try:
-				dataset = re.sub(" ", "", dataset[0])
-				dataset = re.split(",", dataset)
-			except:
-				pass
 			return random.choice(dataset)
 
 	###API for random fullName ###
@@ -506,7 +544,7 @@ class api():
 			"24 Hour"
 		"""
 		if args:
-			format = args[0]
+			format = random.choice(args)
 		else:
 			format = "12 Hour"
 
@@ -520,11 +558,59 @@ class api():
 			period = ""
 		return h + ":" + m + " " + period
 
-
 	###API for random id ###
-	def random_id(self):
-		return self.random_number(args=[0,99999999])
+	def random_id(self, args = None):
+		if not args:
+			return self.random_number(args=[0,99999999])
+		else:
+			hardcode = args[0]
+			random_template = ""
+			if "number" in args[1]:
+				random_template += string.digits
+			if "character" in args[1]:
+				random_template += string.ascii_uppercase
+			amount = args[2]
+
+			for i in range(int(amount)):
+				hardcode += random.choice(random_template)
+			return hardcode
 
 	###API for random number row ###
 	def random_numberrow(self):
 		return self.random_randomlist(["{numberrow}"])
+
+	###API for random text ###
+	def random_text(self, args = None):
+		if args[0] != "":
+			return args[0]
+		else:
+			return "This is paragraph"
+
+	###API for random uuid ###
+	def random_uuid(self):
+		template = "########-####-####-####-############"
+		result = ""
+		for char in template:
+			if char == "#":
+				result += random.choice(string.digits + "abcdef")
+			else:
+				result += "-"
+		return result
+
+	# def random_userformat(self, args):
+	# 	"""
+	# 	:param args: args[0]: hardcode
+	# 				 args[1]: softcode
+	# 	:return:
+	# 	"""
+	# 	result = args[0]
+	# 	for c in args[1]:
+	# 		if c in string.digits:
+	# 			result += random.choice(string.digits)
+	# 		elif c in string.ascii_lowercase:
+	# 			result += random.choice(string.ascii_lowercase)
+	# 		elif c in string.ascii_uppercase:
+	# 			result += random.choice(string.ascii_uppercase)
+	# 		elif c in string.punctuation:
+	# 			result += random.choice(string.punctuation)
+	# 	return result
