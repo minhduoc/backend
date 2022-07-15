@@ -1,14 +1,11 @@
-import json
-import pprint
+
+
 from flask_cors import CORS, cross_origin
 from random_functions import api
 from dataStructure import dataStructure
 import re
 from flask import Flask, request
 
-class connect:
-	def __init__(self):
-		pass
 
 
 def createField(data):
@@ -18,7 +15,7 @@ def createField(data):
 	for i in range(len(data)):
 
 		if isKeyObject(data[i]):
-			tmp_data.update({"keyName": get_keyname(data[i])})
+			tmp_data.update({"keyName": get_keyname(data[i]).replace(" ", "_")})
 			tmp_data.update({"dataType": get_datatype(data[i + 1])})
 			key_parent = tmpKey
 			try:
@@ -39,7 +36,7 @@ def createField(data):
 			tmp_data.update({"parent": key_parent})
 
 		elif isKeyname(data[i]):
-			tmp_data.update({"keyName": get_keyname(data[i])})
+			tmp_data.update({"keyName": get_keyname(data[i]).replace(" ", "_")})
 			tmp_data.update({"dataType": get_datatype(data[i + 1])})
 			key_parent = "root"
 			tmpKey = tmp_data["keyName"]
@@ -66,13 +63,38 @@ def createField(data):
 
 	return lField
 
+def decodeHtml(data):
+	data = re.sub("%20", " ", data)
+	data = re.sub("%21", "!", data)
+	data = re.sub("%22", '"', data)
+	data = re.sub("%23", "#", data)
+	data = re.sub("%24", "$", data)
+	data = re.sub("%25", "%", data)
+	data = re.sub("%26", "&", data)
+	data = re.sub("%27", "'", data)
+	data = re.sub("%28", "(", data)
+	data = re.sub("%29", ")", data)
+	data = re.sub("%2A", "*", data)
+	data = re.sub("%2B", "+", data)
+	data = re.sub("%2C", ",", data)
+	data = re.sub("%2D", "-", data)
+	data = re.sub("%2E", ".", data)
+	data = re.sub("%2F", "/", data)
+
+	data = re.sub("%3A", ":", data)
+	data = re.sub("%3B", ";", data)
+	data = re.sub("%3C", "<", data)
+	data = re.sub("%3D", "=", data)
+	data = re.sub("%3E", ">", data)
+	data = re.sub("%3F", "?", data)
+	data = re.sub("%40", "@", data)
+
+	return data
+
+
 def generate_json_format(d):
 
-	data = re.sub("%5B", "[", d)
-	data = re.sub("%5D", "]", data)
-	data = re.sub("%20", " ", data)
-	data = re.sub("%3A", ":", data)
-	data = re.sub("%2C", ",", data)
+	data = decodeHtml(d)
 
 	data = re.split("&", data)
 
@@ -130,14 +152,13 @@ def generate_json_format(d):
 
 def get_random_function(element):
 	random = api()
-	apiName = "random_" + element["valueType"].lower()
-	apiName = re.sub(" ", "", apiName)
+
+	name = re.sub(" ", "", element["valueType"].lower())
+	apiName = "random_" + name
 	rand_func = getattr(random, apiName, random.random_randomlist)
 	return rand_func
 
 def get_random_value(element):
-	parameter = None
-	value = ""
 	rand_func = get_random_function(element)
 	try:
 		if element["dataType"] == "arrobj" or element["dataType"] == "array":
@@ -205,42 +226,64 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route("/data/render", methods = ["POST"])
 @cross_origin()
 def render_data():
+
 	data = request.form.get('dataForm')
+
 	result = []
 	number_of_row = re.split("&",data)[0]
-	re.findall("number_of_row=*d&", data)
+	number_of_row = int(re.findall("=\d*", number_of_row)[0][1:])
 
-	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
+	format_file = re.split("&", data)[1]
+	format_file  = re.findall("=\w*", format_file)[0][1:]
+
+	try:
+		table_name = re.split("&", data)[2]
+		table_name = re.findall("=\w*", table_name)[0][1:]
+	except:
+		table_name = ""
+	for i in range(number_of_row):
 		element = generate_json_format(data).format_data()
-
 		result.append(element)
 
-	return pprint.pformat(result, indent=6, sort_dicts=False).replace("'", '"')
+	
+	if format_file == "JSON":
+		return export_json_file(result)
+	elif format_file == "SQL":
+		return export_sql_file(result,table_name)
+	elif format_file == "CSV":
+		return export_json_file(result)
 
 
+@app.route("/updatedb", methods = ["GET"])
+@cross_origin()
+def update_database():
 
+	data = request.form.get('dataForm')
 
-# def render_data():
-# 	# data = request.form.get('dataForm')
-# 	data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1656900689104=key_1&data_type_1656900689104=normal&value_type_1656900689104=username&key_1656900689105=key_2&data_type_1656900689105=normal&value_type_1656900689105=Email&option_1_1656900689105%5B%5D=hostmail&option_1_1656900689105%5B%5D=gmail&key_1656900689106=key_3&data_type_1656900689106=array&value_type_1656900689106=Username&array_option_1656900689106=2&key_1656900714010=key_4&data_type_1656900714010=arrobj&array_option_1656900714010=3&key_object_1656900714010=key_4_1&data_type_object_1656900714010=normal&value_type_object_1656900714010=Number&option_1_object_1656900714010=1&option_2_object_1656900714010=4&key_object_1656900731177=key_4_1&data_type_object_1656900731177=array&value_type_object_1656900731177=MAC%20Address&array_option_object_1656900731177=5&option_1_object_1656900731177%5B%5D=A%3AA&option_1_object_1656900731177%5B%5D=A-A&key_1656900745706=key_5&data_type_1656900745706=object&key_object_1656900745706=key_5_1&data_type_object_1656900745706=normal&value_type_object_1656900745706=Fullname&key_object_1656900780210=key_5_2&data_type_object_1656900780210=array&value_type_object_1656900780210=Random%20List&array_option_object_1656900780210=2&option_1_object_1656900780210=item1%2C%20item2%2C%20item3"
-#
-# 	result = []
-# 	number_of_row = re.split("&",data)[0]
-# 	re.findall("number_of_row=*d&", data)
-#
-# 	for i in range(int(re.findall("=\d*", number_of_row)[0][1:])):
-# 		element = generate_json_format(data).format_data()
-# 		result.append(element)
-#
-# 	result = json.loads(str(result).replace("'", '"'))
-# 	print(json.dumps(result, indent=4, sort_keys=False))
-#
-# 	return print_html(json.dumps(result, indent=8, sort_keys=False))
-#
-# def print_html(data):
-# 	data = data.replace("\n", "<br>").replace(" ", "&nbsp;")
-#
-# 	return data
+	db = api()
+	if db.updateDatabase(name="food product", data=data):
+		return "Update successfully, Please waiting for reload page"
+	else:
+		return "ERROR: This Field already had in database"
+
+def export_json_file(result):
+	return str(result).replace("'", '"')
+
+def export_sql_file(result, table_name):
+	sql_file = ""
+	for row in result:
+		lcol = ""
+		lvalue = ""
+		for col in row:
+			lcol +=" "+ str(col) + ","
+			lvalue +=" '" + str(row[col]) + "',"
+		lcol = lcol[:-1]
+		lvalue = lvalue[:-1]
+
+		sql_template = "INSERT INTO `" + table_name + "`("+lcol+") VALUES ("+lvalue+");"
+		sql_file += sql_template
+	return sql_file
+
 
 
 if __name__ == "__main__":

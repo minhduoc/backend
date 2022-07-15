@@ -9,23 +9,70 @@ class api():
 	db = database()
 
 	def formatData(self, rawdata):
+		if type(rawdata) == list:
+			return rawdata
+		
 		item_list = re.split("\n", rawdata)
 		data = []
 		for item in item_list:
 			if item != "":
-				if item not in data:
+				if "'" not in item and item not in data:
 					data.append(item)
 		return data
 
 	def updateDatabase(self, name, data):
 		data_list = self.formatData(data)
-		file_database = open("db.py", mode="a")
-		file_API = open("random_functions.py", mode="a")
+		name_html = name.capitalize()
 
+		name = re.sub(" ", "", name)
+
+		file_db_in = open("db.py",encoding="utf8",  mode="rt")
+		db_contend = file_db_in.read().split("\n")
+
+		for line in db_contend:
+			try:
+				name_in_db = re.findall("self\.\w* =", line)[0]
+				if name.lower() in name_in_db.lower():
+					print("ERROR: This name is already have in database.")
+					return False
+			except:
+				pass
+
+		file_database = open("db.py", mode="a")
 		file_database.write("\n\t\tself." + name + " = " + str(data_list) + "\n")
+
+		file_API = open("random_functions.py", mode="a")
 		file_API.write("\n\t\t###API for random " + name + " ###")
-		file_API.write("\n\tdef random_" + name + "(self):")
+		file_API.write("\n\tdef random_" + name.lower() + "(self):")
 		file_API.write("\n\t\treturn random.choice(db." + name + ")\n")
+
+		file_fe_in = open("tmp_insert.txt", mode="rt")
+		contend = file_fe_in.read().split("\n")
+		for line in contend:
+			if "<h4>Customize</h4>" in line:
+				newrow = contend[contend.index(line)].replace("<h4>Customize</h4>", "<h4>"+name_html+"</h4>")
+				contend[contend.index(line)] = newrow
+
+				contend.insert(contend.index(newrow) + 5, "")
+				contend.insert(contend.index(newrow) + 6, """                <div class="type-option" onclick="getAndAppendValueType(this,'${idString}')" >""")
+				contend.insert(contend.index(newrow) + 7, "")
+				contend.insert(contend.index(newrow) + 8, "                    <h4>Customize</h4>")
+				contend.insert(contend.index(newrow) + 9, "")
+				contend.insert(contend.index(newrow) + 10, "                    <p>Customize data from user</p>")
+				contend.insert(contend.index(newrow) + 11, "")
+				contend.insert(contend.index(newrow) + 12, "                </div>")
+				break
+
+		file_fe_in.close()
+
+		modify_fe = open("tmp_insert.txt", mode="wt")
+
+		for line in contend:
+			modify_fe.write(line)
+			modify_fe.write("\n")
+		modify_fe.close()
+		return True
+
 
 	def wrap(self, args):
 		min = int(args[0])
@@ -76,21 +123,21 @@ class api():
 	def random_companyname(self):
 		return random.choice(db.companyName)
 
-	###API for random contrucionHeavyEquipment ###
-	def random_contrucionheavyequipment(self):
-		return random.choice(db.contrucionHeavyEquipment)
+	###API for random constructionHeavyEquipment ###
+	def random_constructionheavyequipment(self):
+		return random.choice(db.constructionHeavyEquipment)
 
-	###API for random contrucionMaterial ###
-	def random_contrucionmaterial(self):
-		return random.choice(db.contrucionMaterial)
+	###API for random constructionMaterial ###
+	def random_constructionmaterial(self):
+		return random.choice(db.constructionMaterial)
 
-	###API for random contrucionRole ###
-	def random_contrucionrole(self):
-		return random.choice(db.contrucionRole)
+	###API for random constructionRole ###
+	def random_constructionrole(self):
+		return random.choice(db.constructionRole)
 
-	###API for random contrucionTrade ###
-	def random_contruciontrade(self):
-		return random.choice(db.contrucionTrade)
+	###API for random constructionTrade ###
+	def random_constructiontrade(self):
+		return random.choice(db.constructionTrade)
 
 	###API for random country ###
 	def random_country(self):
@@ -137,7 +184,7 @@ class api():
 		return random.choice(db.firstName)
 
 	###API for random jobTitle ###
-	def random_jobnitle(self):
+	def random_jobtitle(self):
 		return random.choice(db.jobTitle)
 
 	###API for random language ###
@@ -194,13 +241,13 @@ class api():
 
 	###API for random userName ###
 	def random_username(self):
-		return self.random_firstname()[0].lower() + self.random_lastname().lower() + str(random.randint(1, 99))
+		return (self.random_firstname()[0].lower() + self.random_lastname().lower() + str(random.randint(1, 99))).replace(" ","")
 
 	###API for random Age ###
 	def random_age(self, args=None):
 
-		min = 10
-		max = 90
+		min = 1
+		max = 100
 		if args:
 			min, max = self.wrap(args)
 
@@ -253,7 +300,8 @@ class api():
 		:param seperator: ":"  "-"
 		"""
 		if args:
-			seperator = args[0]
+			seperator = random.choice(args)
+
 		else:
 			seperator = ":"
 
@@ -359,18 +407,29 @@ class api():
 
 	###API for random date ###
 	def random_date(self, args= None):
-		min = "01/01/1800"
-		max = "31/12/2200"
-		try:
-			format = args[2]
-		except:
-			format = "dd/mm/yyyy"
+
+		min = "2000-01-01"
+		max = "2030-12-31"
+		sqltime = ""
 		if args:
-			minDay, minMonth, minYear = re.split('/', args[0])
-			maxDay, maxMonth, maxYear = re.split('/', args[1])
+			try:
+				minYear, minMonth, minDay = re.split('-', args[0])
+				maxYear, maxMonth, maxDay = re.split('-', args[1])
+			except:
+				minYear, minMonth, minDay = re.split('-', min)
+				maxYear, maxMonth, maxDay = re.split('-', max)
+
+			format = args[-1]
+			if format == "sqltime":
+				format = "dd/mm/yyyy"
+				sqltime = self.random_sqltime()
+			elif re.findall("\d", format):
+				format = "dd/mm/yyyy"
 		else:
-			minDay, minMonth, minYear = re.split('/', min)
-			maxDay, maxMonth, maxYear = re.split('/', max)
+			minYear, minMonth,minDay = re.split('-', min)
+			maxYear, maxMonth, maxDay = re.split('-', max)
+			format = "dd/mm/yyyy"
+
 		tmpY = str(random.randint(int(minYear), int(maxYear)))
 
 		if minYear == maxYear:
@@ -380,7 +439,8 @@ class api():
 
 		while True:
 			dd = random.randint(1, calendar.mdays[tmpM])
-			if dd > int(minDay) and dd < int(maxDay):
+
+			if dd >= int(minDay) and dd <= int(maxDay):
 				break
 		if len(str(dd)) == 1:
 			dd = '0' + str(dd)
@@ -398,7 +458,23 @@ class api():
 		date = re.sub("dd", str(dd), date)
 
 		date = re.sub("yyyy", tmpY, date)
-		return date
+		return date + sqltime
+
+	def random_sqltime(self):
+		h = str(random.randint(0,23))
+		if len(h) == 1:
+			h = '0' + h
+
+		m = str(random.randint(0,59))
+		if len(m) == 1:
+			m = '0' + m
+
+		s = str(random.randint(0, 59))
+		if len(s) == 1:
+			s = '0' + s
+
+		time = " " + h + ":" + m + ":" + s
+		return time
 
 	###API for random fileNameWithExtension ###
 	def random_filenamewithextension(self):
@@ -415,15 +491,12 @@ class api():
 		return ''.join(random.choice(template) for _ in range(64))
 
 	###API for random phoneNumber ###
-	def random_phonenumber(self, format="0## ### ####"):
-		"""
-		:param format:
-			"0## ### ####"
-			"0##-###-####"
-			"(0##)###-####"
-			"+84 ### ### ###"
-			"0#########"
-		"""
+	def random_phonenumber(self, args = None):
+		if args:
+			format = random.choice(args)
+		else:
+			format = "0## ### ####"
+  
 		phone = ''
 		for n in format:
 			if n == "#":
@@ -438,11 +511,7 @@ class api():
 
 	###API for random password ###
 	def random_password(self, args= None):
-		"""
-		:param min:
-		:param max:
 
-		"""
 		min = 8
 		max = 12
 		if args:
@@ -450,7 +519,13 @@ class api():
 
 		template = string.digits + string.ascii_lowercase + string.ascii_uppercase + '!@#$%^&*'
 		len = random.randint(min, max)
-		return ''.join(random.choice(template) for _ in range(len))
+		result = random.choice('!@#$%^&*')
+		result += random.choice(string.digits)
+		result += random.choice(string.ascii_lowercase)
+		result += random.choice(string.ascii_uppercase)
+		for i in range(4,len):
+			result += random.choice(template)
+		return result
 
 	###API for random number ###
 	def random_number(self, args=None):
@@ -470,7 +545,7 @@ class api():
 			"24 Hour"
 		"""
 		if args:
-			format = args[0]
+			format = random.choice(args)
 		else:
 			format = "12 Hour"
 
@@ -483,3 +558,72 @@ class api():
 		else:
 			period = ""
 		return h + ":" + m + " " + period
+
+	###API for random id ###
+	def random_id(self, args = None):
+		if not args:
+			return self.random_number(args=[0,99999999])
+		else:
+			hardcode = args[0]
+			random_template = ""
+			if "number" in args[1]:
+				random_template += string.digits
+			if "character" in args[1]:
+				random_template += string.ascii_uppercase
+			amount = args[2]
+
+			for i in range(int(amount)):
+				hardcode += random.choice(random_template)
+			return hardcode
+
+	###API for random number row ###
+	def random_numberrow(self):
+		return self.random_randomlist(["{numberrow}"])
+
+	###API for random text ###
+	def random_text(self, args = None):
+		if args[0] != "":
+			return args[0]
+		else:
+			return "This is paragraph"
+
+	###API for random uuid ###
+	def random_uuid(self):
+		template = "########-####-####-####-############"
+		result = ""
+		for char in template:
+			if char == "#":
+				result += random.choice(string.digits + "abcdef")
+			else:
+				result += "-"
+		return result
+
+	# def random_userformat(self, args):
+	# 	"""
+	# 	:param args: args[0]: hardcode
+	# 				 args[1]: softcode
+	# 	:return:
+	# 	"""
+	# 	result = args[0]
+	# 	for c in args[1]:
+	# 		if c in string.digits:
+	# 			result += random.choice(string.digits)
+	# 		elif c in string.ascii_lowercase:
+	# 			result += random.choice(string.ascii_lowercase)
+	# 		elif c in string.ascii_uppercase:
+	# 			result += random.choice(string.ascii_uppercase)
+	# 		elif c in string.punctuation:
+	# 			result += random.choice(string.punctuation)
+	# 	return result
+
+		###API for random clotherProduct ###
+	def random_clotherproduct(self):
+		return random.choice(db.clotherProduct)
+
+		###API for random electronicproduct ###
+	def random_electronicproduct(self):
+		return random.choice(db.electronicproduct)
+
+		###API for random foodproduct ###
+	def random_foodproduct(self):
+		return random.choice(db.foodproduct)

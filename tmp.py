@@ -225,17 +225,17 @@ class database():
 							'Devcast', 'Meedoo', 'DabZ', 'Livepath', 'Brainbox', 'Youspan', 'Feedfire', 'Twinte',
 							'Shufflester', 'Trunyx', 'Voomm']
 
-		self.contrucionHeavyEquipment = ['Dump Truck', 'Compactor', 'Grader', 'Crawler', 'Excavator', 'Scraper',
+		self.constructionHeavyEquipment = ['Dump Truck', 'Compactor', 'Grader', 'Crawler', 'Excavator', 'Scraper',
 										 'Dragline', 'Trencher', 'Skid-Steer', 'Bulldozer', 'Backhoe']
 
-		self.contrucionMaterial = ['Rubber', 'Plastic', 'Vinyl', 'Granite', 'Wood', 'Plexiglass', 'Aluminum', 'Stone',
+		self.constructionMaterial = ['Rubber', 'Plastic', 'Vinyl', 'Granite', 'Wood', 'Plexiglass', 'Aluminum', 'Stone',
 								   'Steel', 'Brass', 'Glass']
 
-		self.contrucionRole = ['Subcontractor', 'Engineer', 'Estimator', 'Construction Worker', 'Supervisor',
+		self.constructionRole = ['Subcontractor', 'Engineer', 'Estimator', 'Construction Worker', 'Supervisor',
 							   'Surveyor', 'Construction Manager', 'Project Manager', 'Architect',
 							   'Construction Expeditor', 'Construction Foreman', 'Electrician']
 
-		self.contrucionTrade = ['Laborer', 'Pipefitter', 'Safety Officer', 'Waterproofer', 'Linemen', 'Glazier',
+		self.constructionTrade = ['Laborer', 'Pipefitter', 'Safety Officer', 'Waterproofer', 'Linemen', 'Glazier',
 								'Millwright', 'Welder', 'Sheet Metal Worker', 'Refridgeration', 'Ironworker',
 								'Brickmason', 'Equipment Operator', 'Carpenter', 'Pipelayer', 'Terrazzo',
 								'Cement Mason', 'Concrete Finisher', 'Plasterers', 'Tile Setter', 'Plumber', 'Painter',
@@ -582,21 +582,21 @@ class api():
 	def random_companyName(self):
 		return random.choice(db.companyName)
 
-	###API for random contrucionHeavyEquipment ###
-	def random_contrucionHeavyEquipment(self):
-		return random.choice(db.contrucionHeavyEquipment)
+	###API for random constructionHeavyEquipment ###
+	def random_constructionHeavyEquipment(self):
+		return random.choice(db.constructionHeavyEquipment)
 
-	###API for random contrucionMaterial ###
-	def random_contrucionMaterial(self):
-		return random.choice(db.contrucionMaterial)
+	###API for random constructionMaterial ###
+	def random_constructionMaterial(self):
+		return random.choice(db.constructionMaterial)
 
-	###API for random contrucionRole ###
-	def random_contrucionRole(self):
-		return random.choice(db.contrucionRole)
+	###API for random constructionRole ###
+	def random_constructionRole(self):
+		return random.choice(db.constructionRole)
 
-	###API for random contrucionTrade ###
-	def random_contrucionTrade(self):
-		return random.choice(db.contrucionTrade)
+	###API for random constructionTrade ###
+	def random_constructionTrade(self):
+		return random.choice(db.constructionTrade)
 
 	###API for random country ###
 	def random_country(self):
