@@ -1,15 +1,9 @@
-import json
-import pprint
-from flask import Flask
+
 from flask_cors import CORS, cross_origin
 from random_functions import api
 from dataStructure import dataStructure
 import re
 from flask import Flask, request
-
-class connect:
-	def __init__(self):
-		pass
 
 
 def createField(data):
@@ -68,33 +62,32 @@ def createField(data):
 	return lField
 
 def decodeHtml(data):
-   data = re.sub("%20", " ", data)
-   data = re.sub("%21", "!", data)
-   data = re.sub("%22", '"', data)
-   data = re.sub("%23", "#", data)
-   data = re.sub("%24", "$", data)
-   data = re.sub("%25", "%", data)
-   data = re.sub("%26", "&", data)
-   data = re.sub("%27", "'", data)
-   data = re.sub("%28", "(", data)
-   data = re.sub("%29", ")", data)
-   data = re.sub("%2A", "*", data)
-   data = re.sub("%2B", "+", data)
-   data = re.sub("%2C", ",", data)
-   data = re.sub("%2D", "-", data)
-   data = re.sub("%2E", ".", data)
-   data = re.sub("%2F", "/", data)
+	data = re.sub("%20", " ", data)
+	data = re.sub("%21", "!", data)
+	data = re.sub("%22", '"', data)
+	data = re.sub("%23", "#", data)
+	data = re.sub("%24", "$", data)
+	data = re.sub("%25", "%", data)
+	data = re.sub("%26", "&", data)
+	data = re.sub("%27", "'", data)
+	data = re.sub("%28", "(", data)
+	data = re.sub("%29", ")", data)
+	data = re.sub("%2A", "*", data)
+	data = re.sub("%2B", "+", data)
+	data = re.sub("%2C", ",", data)
+	data = re.sub("%2D", "-", data)
+	data = re.sub("%2E", ".", data)
+	data = re.sub("%2F", "/", data)
 
-   data = re.sub("%3A", ":", data)
-   data = re.sub("%3B", ";", data)
-   data = re.sub("%3C", "<", data)
-   data = re.sub("%3D", "=", data)
-   data = re.sub("%3E", ">", data)
-   data = re.sub("%3F", "?", data)
-   data = re.sub("%40", "@", data)
-   
+	data = re.sub("%3A", ":", data)
+	data = re.sub("%3B", ";", data)
+	data = re.sub("%3C", "<", data)
+	data = re.sub("%3D", "=", data)
+	data = re.sub("%3E", ">", data)
+	data = re.sub("%3F", "?", data)
+	data = re.sub("%40", "@", data)
 
-   return data
+	return data
 
 
 def generate_json_format(d):
@@ -163,8 +156,6 @@ def get_random_function(element):
 	return rand_func
 
 def get_random_value(element):
-	parameter = None
-	value = ""
 	rand_func = get_random_function(element)
 	try:
 		if element["dataType"] == "arrobj" or element["dataType"] == "array":
@@ -229,10 +220,25 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route("/data/render", methods = ["POST"])
+@app.route("/data/render", methods = ["GET"])
 @cross_origin()
 def render_data():
-	data = request.form.get('dataForm')
+	# data = request.form.get('dataForm')
+
+	# key = "product"
+	# value_type = "foodproduct"
+	# op1 = ""
+	# op2 = ""
+	# op3 = ""
+	#
+	# if op1:
+	# 	op1 = "&option_1_1657763852113=" + op1
+	# if op2:
+	# 	op2 = "&option_1_1657763852113=" + op2
+	# if op3:
+	# 	op3 = "&option_1_1657763852113=" + op3
+
+	data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657855978457=id&data_type_1657855978457=normal&value_type_1657855978457=ID&option_1_1657855978457=&option_2_1657855978457=number&option_3_1657855978457=&key_1657855978459=Fname&data_type_1657855978459=normal&value_type_1657855978459=First%20Name&key_1657855978458=Lname&data_type_1657855978458=normal&value_type_1657855978458=Last%20Name&key_1657855978460=fullname&data_type_1657855978460=normal&value_type_1657855978460=Fullname"
 	result = []
 	number_of_row = re.split("&",data)[0]
 	number_of_row = int(re.findall("=\d*", number_of_row)[0][1:])
@@ -248,7 +254,6 @@ def render_data():
 	for i in range(number_of_row):
 		element = generate_json_format(data).format_data()
 		result.append(element)
-
 	
 	if format_file == "JSON":
 		return export_json_file(result)
@@ -258,9 +263,20 @@ def render_data():
 		return export_json_file(result)
 
 
+@app.route("/updatedb", methods = ["GET"])
+@cross_origin()
+def update_database():
+
+	data = request.form.get('dataForm')
+
+	db = api()
+	if db.updateDatabase(name="food product", data=data):
+		return "Update successfully, Please waiting for reload page"
+	else:
+		return "ERROR: This Field already had in database"
 
 def export_json_file(result):
-   return str(result).replace("'", '"')
+	return str(result).replace("'", '"')
 
 def export_sql_file(result, table_name):
 	sql_file = ""

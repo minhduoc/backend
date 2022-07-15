@@ -22,6 +22,9 @@ class api():
 
 	def updateDatabase(self, name, data):
 		data_list = self.formatData(data)
+		name_html = name.capitalize()
+
+		name = re.sub(" ", "", name)
 
 		file_db_in = open("db.py",encoding="utf8",  mode="rt")
 		db_contend = file_db_in.read().split("\n")
@@ -31,7 +34,7 @@ class api():
 				name_in_db = re.findall("self\.\w* =", line)[0]
 				if name.lower() in name_in_db.lower():
 					print("ERROR: This name is already have in database.")
-					return 0
+					return False
 			except:
 				pass
 
@@ -40,14 +43,14 @@ class api():
 
 		file_API = open("random_functions.py", mode="a")
 		file_API.write("\n\t\t###API for random " + name + " ###")
-		file_API.write("\n\tdef random_" + name + "(self):")
+		file_API.write("\n\tdef random_" + name.lower() + "(self):")
 		file_API.write("\n\t\treturn random.choice(db." + name + ")\n")
 
 		file_fe_in = open("tmp_insert.txt", mode="rt")
 		contend = file_fe_in.read().split("\n")
 		for line in contend:
 			if "<h4>Customize</h4>" in line:
-				newrow = contend[contend.index(line)].replace("<h4>Customize</h4>", "<h4>"+name+"</h4>")
+				newrow = contend[contend.index(line)].replace("<h4>Customize</h4>", "<h4>"+name_html+"</h4>")
 				contend[contend.index(line)] = newrow
 
 				contend.insert(contend.index(newrow) + 5, "")
@@ -68,6 +71,7 @@ class api():
 			modify_fe.write(line)
 			modify_fe.write("\n")
 		modify_fe.close()
+		return True
 
 
 	def wrap(self, args):
@@ -479,14 +483,6 @@ class api():
 
 	###API for random phoneNumber ###
 	def random_phonenumber(self, args = None):
-		"""
-		:param format:
-			"0## ### ####"
-			"0##-###-####"
-			"(0##)###-####"
-			"+84 ### ### ###"
-			"		
-		"""
 		if args:
 			format = random.choice(args)
 		else:
@@ -506,11 +502,6 @@ class api():
 
 	###API for random password ###
 	def random_password(self, args= None):
-		"""
-		:param min:
-		:param max:
-
-		"""
 		min = 8
 		max = 12
 		if args:
@@ -524,8 +515,8 @@ class api():
 		result += random.choice(string.ascii_uppercase)
 		for i in range(4,len):
 			result += random.choice(template)
-  
 		return result
+
 	###API for random number ###
 	def random_number(self, args=None):
 
@@ -614,3 +605,15 @@ class api():
 	# 		elif c in string.punctuation:
 	# 			result += random.choice(string.punctuation)
 	# 	return result
+
+		###API for random clotherProduct ###
+	def random_clotherproduct(self):
+		return random.choice(db.clotherProduct)
+
+		###API for random electronicproduct ###
+	def random_electronicproduct(self):
+		return random.choice(db.electronicproduct)
+
+		###API for random foodproduct ###
+	def random_foodproduct(self):
+		return random.choice(db.foodproduct)
