@@ -220,10 +220,10 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route("/data/render", methods = ["GET"])
+@app.route("/data/render", methods = ["POST"])
 @cross_origin()
 def render_data():
-	# data = request.form.get('dataForm')
+	data = request.form.get('dataForm')
 
 	# key = "product"
 	# value_type = "foodproduct"
@@ -238,7 +238,7 @@ def render_data():
 	# if op3:
 	# 	op3 = "&option_1_1657763852113=" + op3
 
-	data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657855978457=id&data_type_1657855978457=normal&value_type_1657855978457=ID&option_1_1657855978457=&option_2_1657855978457=number&option_3_1657855978457=&key_1657855978459=Fname&data_type_1657855978459=normal&value_type_1657855978459=First%20Name&key_1657855978458=Lname&data_type_1657855978458=normal&value_type_1657855978458=Last%20Name&key_1657855978460=fullname&data_type_1657855978460=normal&value_type_1657855978460=Fullname"
+	# data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657855978457=id&data_type_1657855978457=normal&value_type_1657855978457=ID&option_1_1657855978457=&option_2_1657855978457=number&option_3_1657855978457=&key_1657855978459=Fname&data_type_1657855978459=normal&value_type_1657855978459=First%20Name&key_1657855978458=Lname&data_type_1657855978458=normal&value_type_1657855978458=Last%20Name&key_1657855978460=fullname&data_type_1657855978460=normal&value_type_1657855978460=Fullname"
 	result = []
 	number_of_row = re.split("&",data)[0]
 	number_of_row = int(re.findall("=\d*", number_of_row)[0][1:])
