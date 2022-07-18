@@ -1,7 +1,7 @@
 
-
 from flask_cors import CORS, cross_origin
 from random_functions import api
+import json
 from dataStructure import dataStructure
 import re
 from flask import Flask, request
@@ -246,7 +246,6 @@ def render_data():
 		element = generate_json_format(data).format_data()
 		result.append(element)
 
-	
 	if format_file == "JSON":
 		return export_json_file(result)
 	elif format_file == "SQL":
@@ -259,10 +258,18 @@ def render_data():
 @cross_origin()
 def update_database():
 
-	data = request.form.get('dataForm')
+	data = request.form.get('updateForm')
+	dict_data = json.loads(data)
 
 	db = api()
-	if db.updateDatabase(name="food product", data=data):
+	ldata = []
+	for name in dict_data[0]:
+		pass
+
+	for element in dict_data:
+		ldata.append(element[name])
+
+	if db.updateDatabase(name=name, data=ldata):
 		return "Update successfully, Please waiting for reload page"
 	else:
 		return "ERROR: This Field already had in database"
