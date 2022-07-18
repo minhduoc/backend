@@ -229,6 +229,7 @@ def render_data():
 
 	data = request.form.get('dataForm')
 
+
 	result = []
 	number_of_row = re.split("&",data)[0]
 	number_of_row = int(re.findall("=\d*", number_of_row)[0][1:])
