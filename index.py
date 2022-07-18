@@ -1,9 +1,11 @@
 
+
 from flask_cors import CORS, cross_origin
 from random_functions import api
 from dataStructure import dataStructure
 import re
 from flask import Flask, request
+
 
 
 def createField(data):
@@ -150,6 +152,7 @@ def generate_json_format(d):
 
 def get_random_function(element):
 	random = api()
+
 	name = re.sub(" ", "", element["valueType"].lower())
 	apiName = "random_" + name
 	rand_func = getattr(random, apiName, random.random_randomlist)
@@ -223,22 +226,10 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route("/data/render", methods = ["POST"])
 @cross_origin()
 def render_data():
+
 	data = request.form.get('dataForm')
 
-	# key = "product"
-	# value_type = "foodproduct"
-	# op1 = ""
-	# op2 = ""
-	# op3 = ""
-	#
-	# if op1:
-	# 	op1 = "&option_1_1657763852113=" + op1
-	# if op2:
-	# 	op2 = "&option_1_1657763852113=" + op2
-	# if op3:
-	# 	op3 = "&option_1_1657763852113=" + op3
 
-	# data = "number_of_row=100&format_file=JSON&sql_table_name=&key_1657855978457=id&data_type_1657855978457=normal&value_type_1657855978457=ID&option_1_1657855978457=&option_2_1657855978457=number&option_3_1657855978457=&key_1657855978459=Fname&data_type_1657855978459=normal&value_type_1657855978459=First%20Name&key_1657855978458=Lname&data_type_1657855978458=normal&value_type_1657855978458=Last%20Name&key_1657855978460=fullname&data_type_1657855978460=normal&value_type_1657855978460=Fullname"
 	result = []
 	number_of_row = re.split("&",data)[0]
 	number_of_row = int(re.findall("=\d*", number_of_row)[0][1:])
@@ -254,6 +245,7 @@ def render_data():
 	for i in range(number_of_row):
 		element = generate_json_format(data).format_data()
 		result.append(element)
+
 	
 	if format_file == "JSON":
 		return export_json_file(result)

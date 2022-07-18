@@ -301,6 +301,7 @@ class api():
 		"""
 		if args:
 			seperator = random.choice(args)
+
 		else:
 			seperator = ":"
 
@@ -406,6 +407,7 @@ class api():
 
 	###API for random date ###
 	def random_date(self, args= None):
+
 		min = "2000-01-01"
 		max = "2030-12-31"
 		sqltime = ""
@@ -427,6 +429,7 @@ class api():
 			minYear, minMonth,minDay = re.split('-', min)
 			maxYear, maxMonth, maxDay = re.split('-', max)
 			format = "dd/mm/yyyy"
+
 		tmpY = str(random.randint(int(minYear), int(maxYear)))
 
 		if minYear == maxYear:
@@ -436,6 +439,7 @@ class api():
 
 		while True:
 			dd = random.randint(1, calendar.mdays[tmpM])
+
 			if dd >= int(minDay) and dd <= int(maxDay):
 				break
 		if len(str(dd)) == 1:
@@ -507,6 +511,7 @@ class api():
 
 	###API for random password ###
 	def random_password(self, args= None):
+
 		min = 8
 		max = 12
 		if args:
