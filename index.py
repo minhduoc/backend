@@ -1,12 +1,12 @@
 
 from flask_cors import CORS, cross_origin
-from random_functions import api
-import json
-from dataStructure import dataStructure
-import re
 from flask import Flask, request
-
-
+import re
+import json
+import random
+from random_functions import api
+from dataStructure import dataStructure
+from db import database
 
 def createField(data):
 	lField = []
@@ -92,9 +92,9 @@ def decodeHtml(data):
 	return data
 
 
-def generate_json_format(d):
+def generate_json_format(tmpdata):
 
-	data = decodeHtml(d)
+	data = decodeHtml(tmpdata)
 
 	data = re.split("&", data)
 
@@ -110,7 +110,6 @@ def generate_json_format(d):
 
 			elif element["dataType"] == "array":
 				obj_dataStructure.createArrayData(element["keyName"])
-				rand_func = get_random_function(element)
 				for i in range(int(element["option"][0])):
 					obj_dataStructure.updateArrayData(element["keyName"], get_random_value(element))
 
@@ -151,23 +150,39 @@ def generate_json_format(d):
 
 
 def get_random_function(element):
-	random = api()
+	random_api = api()
 
 	name = re.sub(" ", "", element["valueType"].lower())
 	apiName = "random_" + name
-	rand_func = getattr(random, apiName, random.random_randomlist)
+	rand_func = getattr(random_api, apiName, None)
+	if not rand_func:
+		try:
+			rand_value = random.choice(getattr(db, name))
+			return rand_value
+		except:
+			return getattr(random_api, apiName, random_api.random_randomlist)
 	return rand_func
 
 def get_random_value(element):
 	rand_func = get_random_function(element)
+
+	if type(rand_func) == str:
+		return rand_func
+	parameter = []
 	try:
 		if element["dataType"] == "arrobj" or element["dataType"] == "array":
 			parameter = element["option"][1:]
 		else:
 			parameter = element["option"]
+	except:
+		pass
+	try:
+		parameter.append(db)
 		value = rand_func(parameter)
 	except:
-		value = rand_func()
+		parameter.append(database())
+		value = rand_func(parameter)
+
 	return value
 
 def get_value_from_response(row):
@@ -254,14 +269,14 @@ def render_data():
 		return export_json_file(result)
 
 
-@app.route("/updatedb", methods = ["GET"])
+@app.route("/updatedb", methods = ["POST"])
 @cross_origin()
 def update_database():
 
 	data = request.form.get('updateForm')
 	dict_data = json.loads(data)
 
-	db = api()
+	db_function = api()
 	ldata = []
 	for name in dict_data[0]:
 		pass
@@ -269,10 +284,15 @@ def update_database():
 	for element in dict_data:
 		ldata.append(element[name])
 
-	if db.updateDatabase(name=name, data=ldata):
-		return "Update successfully, Please waiting for reload page"
+	status, newdb = db_function.updateDatabase(name=name, data=ldata)
+	if status:
+		msg = "Updated your field to database"
 	else:
-		return "ERROR: This Field already had in database"
+		msg = "ERROR: this field already had in database"
+	global db
+	db = newdb
+
+	return msg
 
 def export_json_file(result):
 	return str(result).replace("'", '"')

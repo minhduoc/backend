@@ -5,8 +5,7 @@ import re
 from db import database
 
 class api():
-	global db
-	db = database()
+
 
 	def formatData(self, rawdata):
 		if type(rawdata) == list:
@@ -21,10 +20,14 @@ class api():
 		return data
 
 	def updateDatabase(self, name, data):
+		db = database()
+
 		data_list = self.formatData(data)
 		name_html = name.capitalize()
 
 		name = re.sub(" ", "", name)
+
+		setattr(db, name, data_list)
 
 		file_db_in = open("db.py",encoding="utf8",  mode="rt")
 		db_contend = file_db_in.read().split("\n")
@@ -34,7 +37,8 @@ class api():
 				name_in_db = re.findall("self\.\w* =", line)[0]
 				if name.lower() in name_in_db.lower():
 					print("ERROR: This name is already have in database.")
-					return False
+					status = False
+					return status, db
 			except:
 				pass
 
@@ -43,7 +47,8 @@ class api():
 
 		file_API = open("random_functions.py", mode="a")
 		file_API.write("\n\t\t###API for random " + name + " ###")
-		file_API.write("\n\tdef random_" + name.lower() + "(self):")
+		file_API.write("\n\tdef random_" + name.lower() + "(self, args = None):")
+		file_API.write("\n\t\tdb = args[-1]")
 		file_API.write("\n\t\treturn random.choice(db." + name + ")\n")
 
 		file_fe_in = open("tmp_insert.txt", mode="rt")
@@ -71,7 +76,9 @@ class api():
 			modify_fe.write(line)
 			modify_fe.write("\n")
 		modify_fe.close()
-		return True
+
+		status = True
+		return status, db
 
 
 	def wrap(self, args):
@@ -84,148 +91,185 @@ class api():
 		return min, max
 
 	###API for random animalName ###
-	def random_animalname(self):
+	def random_animalname(self, args = None):
+		db = args[-1]
 		return random.choice(db.animalName)
 
 	###API for random appBundleID ###
-	def random_appbundleid(self):
+	def random_appbundleid(self, args = None):
+		db = args[-1]
 		return random.choice(db.appBundleID)
 
 	###API for random appName ###
-	def random_appname(self):
+	def random_appname(self, args = None):
+		db = args[-1]
 		return random.choice(db.appName)
 
 	###API for random avatar ###
-	def random_avatar(self):
+	def random_avatar(self, args = None):
+		db = args[-1]
 		return random.choice(db.avatar)
 
 	###API for random boolean ###
-	def random_boolean(self):
+	def random_boolean(self, args = None):
+		db = args[-1]
 		return random.choice(db.boolean)
 
 	###API for random carBrand ###
-	def random_carbrand(self):
+	def random_carbrand(self, args = None):
+		db = args[-1]
 		return random.choice(db.carBrand)
 
 	###API for random carModel ###
-	def random_carmodel(self):
+	def random_carmodel(self, args = None):
+		db = args[-1]
 		return random.choice(db.carModel)
 
 	###API for random city ###
-	def random_city(self):
+	def random_city(self, args = None):
+		db = args[-1]
 		return random.choice(db.city)
 
 	###API for random color ###
-	def random_color(self):
+	def random_color(self, args = None):
+		db = args[-1]
 		return random.choice(db.color)
 
 	###API for random companyName ###
-	def random_companyname(self):
+	def random_companyname(self, args = None):
+		db = args[-1]
 		return random.choice(db.companyName)
 
 	###API for random constructionHeavyEquipment ###
-	def random_constructionheavyequipment(self):
+	def random_constructionheavyequipment(self, args = None):
+		db = args[-1]
 		return random.choice(db.constructionHeavyEquipment)
 
 	###API for random constructionMaterial ###
-	def random_constructionmaterial(self):
+	def random_constructionmaterial(self, args = None):
+		db = args[-1]
 		return random.choice(db.constructionMaterial)
 
 	###API for random constructionRole ###
-	def random_constructionrole(self):
+	def random_constructionrole(self, args = None):
+		db = args[-1]
 		return random.choice(db.constructionRole)
 
 	###API for random constructionTrade ###
-	def random_constructiontrade(self):
+	def random_constructiontrade(self, args = None):
+		db = args[-1]
 		return random.choice(db.constructionTrade)
 
 	###API for random country ###
-	def random_country(self):
+	def random_country(self, args = None):
+		db = args[-1]
 		return random.choice(db.country)
 
 	###API for random countryCode ###
-	def random_countrycode(self):
+	def random_countrycode(self, args = None):
+		db = args[-1]
 		return random.choice(db.countryCode)
 
 	###API for random creditCardType ###
-	def random_creditcardtype(self):
+	def random_creditcardtype(self, args = None):
+		db = args[-1]
 		return random.choice(db.creditCardType)
 
 	###API for random currency ###
-	def random_currency(self):
+	def random_currency(self, args = None):
+		db = args[-1]
 		return random.choice(db.currency)
 
 	###API for random currencyCode ###
-	def random_currencycode(self):
+	def random_currencycode(self, args = None):
+		db = args[-1]
 		return random.choice(db.currencyCode)
 
 	###API for random department ###
-	def random_department(self):
+	def random_department(self, args = None):
+		db = args[-1]
 		return random.choice(db.department)
 
 	###API for random domain ###
-	def random_domain(self):
+	def random_domain(self, args = None):
+		db = args[-1]
 		return random.choice(db.domain)
 
 	###API for random dummyImageURL ###
-	def random_dummyimageurl(self):
+	def random_dummyimageurl(self, args = None):
+		db = args[-1]
 		return random.choice(db.dummyImageURL)
 
 	###API for random fileExtension ###
-	def random_fileextension(self):
+	def random_fileextension(self, args = None):
+		db = args[-1]
 		return random.choice(db.fileExtension)
 
 	###API for random fileName ###
-	def random_filename(self):
+	def random_filename(self, args = None):
+		db = args[-1]
 		return random.choice(db.fileName)
 
 	###API for random firstName ###
-	def random_firstname(self):
+	def random_firstname(self, args = None):
+		db = args[-1]
 		return random.choice(db.firstName)
 
 	###API for random jobTitle ###
-	def random_jobtitle(self):
+	def random_jobtitle(self, args = None):
+		db = args[-1]
 		return random.choice(db.jobTitle)
 
 	###API for random language ###
-	def random_language(self):
+	def random_language(self, args = None):
+		db = args[-1]
 		return random.choice(db.language)
 
 	###API for random lastName ###
-	def random_lastname(self):
+	def random_lastname(self, args = None):
+		db = args[-1]
 		return random.choice(db.lastName)
 
 	###API for random productGrocery ###
-	def random_productgrocery(self):
+	def random_productgrocery(self, args = None):
+		db = args[-1]
 		return random.choice(db.productGrocery)
 
 	###API for random streetName ###
-	def random_streetname(self):
+	def random_streetname(self, args = None):
+		db = args[-1]
 		return random.choice(db.streetName)
 
 	###API for random timeZone ###
-	def random_timezone(self):
+	def random_timezone(self, args = None):
+		db = args[-1]
 		return random.choice(db.timeZone)
 
 	###API for random gender ###
-	def random_gender(self):
+	def random_gender(self, args = None):
+		db = args[-1]
 		return random.choice(db.gender)
 
 	###API for random programmingLanguage ###
-	def random_programminglanguage(self):
+	def random_programminglanguage(self, args = None):
+		db = args[-1]
 		return random.choice(db.programmingLanguage)
 
 	###API for random dayWeek ###
-	def random_dayweek(self):
+	def random_dayweek(self, args = None):
+		db = args[-1]
 		return random.choice(db.dayWeek)
 
 	###API for random month ###
-	def random_month(self):
+	def random_month(self, args = None):
+		db = args[-1]
 		return random.choice(db.month)
 
 	###API for random customdata ###
-	def random_randomlist(self, dataset=[]):
-		if  not dataset:
+	def random_randomlist(self, args = None):
+		dataset = args[0]
+
+		if type(dataset) is database:
 			return []
 		else:
 			try:
@@ -236,11 +280,11 @@ class api():
 			return random.choice(dataset)
 
 	###API for random fullName ###
-	def random_fullname(self):
+	def random_fullname(self, args = None):
 		return self.random_firstname() + " " + self.random_lastname()
 
 	###API for random userName ###
-	def random_username(self):
+	def random_username(self, args = None):
 		return (self.random_firstname()[0].lower() + self.random_lastname().lower() + str(random.randint(1, 99))).replace(" ","")
 
 	###API for random Age ###
@@ -277,7 +321,7 @@ class api():
 		return name.lower() + "@" + domain + "." + self.random_randomlist(extends)
 
 	###API for random ipv4 ###
-	def random_ipv4(self):
+	def random_ipv4(self, args = None):
 		offset = [1, 0, 0, 1]
 		ip = ""
 		for i in offset:
@@ -286,7 +330,7 @@ class api():
 		return ip[0:-1]
 
 	###API for random ipv6 ###
-	def random_ipv6(self):
+	def random_ipv6(self, args = None):
 		template = string.digits + "ABCDEF"
 		ipv6 = ""
 		for i in range(8):
@@ -327,7 +371,7 @@ class api():
 		return version[0:-1]
 
 	###API for random bitcoinAddress ###
-	def random_bitcoinaddress(self):
+	def random_bitcoinaddress(self, args = None):
 		template = string.digits + string.ascii_lowercase
 		bit = ""
 		for i in range(42):
@@ -460,7 +504,7 @@ class api():
 		date = re.sub("yyyy", tmpY, date)
 		return date + sqltime
 
-	def random_sqltime(self):
+	def random_sqltime(self, args = None):
 		h = str(random.randint(0,23))
 		if len(h) == 1:
 			h = '0' + h
@@ -477,16 +521,16 @@ class api():
 		return time
 
 	###API for random fileNameWithExtension ###
-	def random_filenamewithextension(self):
+	def random_filenamewithextension(self, args = None):
 		return self.random_filename() + "." + self.random_fileextension()
 
 	###API for random hexColorCode ###
-	def random_hexcolorcode(self):
+	def random_hexcolorcode(self, args = None):
 		template = string.digits + "ABCDEF"
 		return "#" + ''.join(random.choice(template) for _ in range(6))
 
 	###API for random SHA256 ###
-	def random_sha256(self):
+	def random_sha256(self, args = None):
 		template = string.digits + "abcdef"
 		return ''.join(random.choice(template) for _ in range(64))
 
@@ -496,7 +540,7 @@ class api():
 			format = random.choice(args)
 		else:
 			format = "0## ### ####"
-  
+
 		phone = ''
 		for n in format:
 			if n == "#":
@@ -506,7 +550,7 @@ class api():
 		return phone
 
 	###API for random streetNameAndAddress ###
-	def random_streetnameandaddress(self):
+	def random_streetnameandaddress(self, args = None):
 		return str(random.randint(1, 999)) + " " + self.random_streetname()
 
 	###API for random password ###
@@ -577,7 +621,7 @@ class api():
 			return hardcode
 
 	###API for random number row ###
-	def random_numberrow(self):
+	def random_numberrow(self, args = None):
 		return self.random_randomlist(["{numberrow}"])
 
 	###API for random text ###
@@ -588,7 +632,7 @@ class api():
 			return "This is paragraph"
 
 	###API for random uuid ###
-	def random_uuid(self):
+	def random_uuid(self, args = None):
 		template = "########-####-####-####-############"
 		result = ""
 		for char in template:
@@ -617,13 +661,21 @@ class api():
 	# 	return result
 
 		###API for random clotherProduct ###
-	def random_clotherproduct(self):
+	def random_clotherproduct(self, args = None):
+		db = args[-1]
 		return random.choice(db.clotherProduct)
 
 		###API for random electronicproduct ###
-	def random_electronicproduct(self):
+	def random_electronicproduct(self, args = None):
+		db = args[-1]
 		return random.choice(db.electronicproduct)
 
 		###API for random foodproduct ###
-	def random_foodproduct(self):
+	def random_foodproduct(self, args = None):
+		db = args[-1]
 		return random.choice(db.foodproduct)
+
+		###API for random CUSTOME_NAME ###
+	def random_custome_name(self, args = None):
+		db = args[-1]
+		return random.choice(db.CUSTOME_NAME)

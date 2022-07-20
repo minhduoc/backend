@@ -93,3 +93,16 @@ INSERT INTO `animalName`(`value`) VALUES ('Caracara (unidentified)');
 INSERT INTO `animalName`(`value`) VALUES ('Bandicoot, southern brown');
 INSERT INTO `animalName`(`value`) VALUES ('Purple grenadier');
 INSERT INTO `animalName`(`value`) VALUES ('Madagascar hawk owl');
+
+
+
+
+
+
+
+
+
+
+
+
+
